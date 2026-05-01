@@ -7,6 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="회식 관리">
 <meta name="theme-color" content="#111111">
+<link rel="manifest" href="manifest.json">
 <title>회식 차수 관리</title>
 <style>
 :root {
@@ -489,6 +490,9 @@ function showToast(msg) {
 
 
 /* ── 초기화 ── */
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
+}
 window.addEventListener("load", function() {
   loadAll();
   render();
