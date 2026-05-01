@@ -409,7 +409,7 @@ function openSettle() {
     "<div class='pre'>"+pre+"</div>"+
     "<div class='ar'>"+
       "<button class='ab' onclick='doCopy()'>클립보드 복사</button>"+
-      "<button class='ab' onclick='doDown()'>파일 저장</button>"+
+      "<button class='ab' onclick='doShare()'>공유하기</button>"+
     "</div>";
   document.getElementById("ovSettle").style.display="flex";
 }
@@ -458,13 +458,18 @@ function fallback(txt) {
   document.execCommand("copy"); document.body.removeChild(ta);
   showToast("복사됐습니다");
 }
-function doDown() {
-  var txt=buildText();
-  var uri="data:text/plain;charset=utf-8,"+encodeURIComponent(txt);
-  var a=document.createElement("a");
-  a.href=uri; a.download="회식_정산.txt";
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  showToast("저장됐습니다");
+function doShare() {
+  var txt = buildText();
+  if (navigator.share) {
+    navigator.share({
+      title: "회식 정산 결과",
+      text: txt
+    }).catch(function(){});
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(txt).then(function(){ showToast("복사됐습니다 (공유 미지원)"); }).catch(function(){ fallback(txt); });
+  } else {
+    fallback(txt);
+  }
 }
 
 /* ── 토스트 ── */
