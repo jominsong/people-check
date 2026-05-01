@@ -413,10 +413,15 @@ function fallback(txt) {
   toast("복사됐습니다");
 }
 function doDown() {
+  var txt = buildText();
+  var uri = "data:text/plain;charset=utf-8," + encodeURIComponent(txt);
   var a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([buildText()], {type:"text/plain;charset=utf-8"}));
-  a.download = "회식_정산.txt"; a.click();
-  toast("파일 저장됐습니다");
+  a.href = uri;
+  a.download = "회식_정산.txt";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  toast("저장됐습니다");
 }
 function toast(msg) {
   var t = document.getElementById("toast");
