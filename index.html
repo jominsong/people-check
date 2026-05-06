@@ -23,7 +23,6 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;}
 
-/* 상단 고정 */
 #top{position:fixed;top:0;left:0;right:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--bd);}
 .hdr{padding:12px 14px 10px;}
 .hdr-row{display:flex;align-items:center;justify-content:space-between;gap:8px;}
@@ -44,17 +43,21 @@ input[type=file]{display:none;}
 .tab.on{background:var(--text);color:var(--bg);border-color:transparent;}
 .cnt{font-size:11px;color:var(--text2);}
 
-.leg{display:flex;gap:10px;padding:5px 14px 8px;}
+.leg{display:flex;gap:10px;padding:5px 14px 8px;align-items:center;}
 .li{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2);}
 .ld{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-
-/* 저장 상태 표시 */
-.save-bar{display:flex;align-items:center;justify-content:center;gap:5px;padding:4px;background:var(--bg2);font-size:10px;color:var(--text2);}
+.save-info{margin-left:auto;display:flex;align-items:center;gap:5px;}
 .save-dot{width:6px;height:6px;border-radius:50%;background:#4CAF50;}
+.save-lbl{font-size:10px;color:var(--text2);}
 
-/* 리스트 */
 #list{padding:8px 14px 100px;}
 
+/* 빈 상태 */
+.empty-state{text-align:center;padding:3rem 1rem;}
+.empty-state .big{font-size:40px;margin-bottom:12px;}
+.empty-state .msg{font-size:14px;color:var(--text2);line-height:1.7;}
+
+/* 멤버 카드 */
 .card{border:1px solid var(--bd);border-radius:var(--r);background:var(--bg);margin-bottom:5px;overflow:hidden;}
 .ch{display:flex;align-items:center;justify-content:space-between;padding:13px 12px;cursor:pointer;user-select:none;}
 .ch:active{background:var(--bg2);}
@@ -64,7 +67,6 @@ input[type=file]{display:none;}
 .ps{display:flex;gap:3px;flex-shrink:0;}
 .p{font-size:10px;padding:3px 6px;border-radius:4px;background:var(--bg3);color:var(--text2);}
 .p.a1{background:var(--c1);color:#fff;}.p.a2{background:var(--c2);color:#fff;}.p.a3{background:var(--c3);color:#fff;}.p.a4{background:var(--c4);color:#fff;}
-
 .rp{display:flex;gap:6px;padding:9px 12px;background:var(--bg2);}
 .rb{flex:1;padding:12px 0;border-radius:var(--r);border:1px solid var(--bd2);background:var(--bg);color:var(--text2);font-size:14px;font-weight:500;cursor:pointer;text-align:center;}
 .rb:active{opacity:0.7;}
@@ -81,12 +83,27 @@ input[type=file]{display:none;}
 .sh-tt{font-size:16px;font-weight:600;}
 .sh-cl{width:28px;height:28px;border-radius:50%;border:none;background:var(--bg2);color:var(--text2);font-size:18px;cursor:pointer;}
 
+/* 멤버 추가 시트 */
+.add-row{display:flex;gap:8px;margin-bottom:10px;}
+.add-input{flex:1;padding:11px 13px;border:1px solid var(--bd2);border-radius:10px;font-size:16px;background:var(--bg2);color:var(--text);}
+.add-input:focus{outline:none;border-color:var(--c1);}
+.add-btn-ok{padding:11px 16px;border-radius:10px;border:none;background:var(--text);color:var(--bg);font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap;}
+.add-btn-ok:active{opacity:0.7;}
+.add-hint{font-size:11px;color:var(--text2);margin-bottom:12px;}
+.added-list{display:flex;flex-direction:column;gap:5px;max-height:280px;overflow-y:auto;}
+.added-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--bg2);border-radius:var(--r);}
+.added-name{font-size:14px;font-weight:500;}
+.added-k{font-size:11px;color:var(--text2);}
+.del-btn{width:26px;height:26px;border-radius:50%;border:none;background:var(--bg3);color:var(--text2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
 /* 정산 시트 */
-.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px;}
-.sc{background:var(--bg2);border-radius:var(--r);padding:10px 6px;text-align:center;}
-.sl{font-size:10px;color:var(--text2);margin-bottom:3px;}
-.sn{font-size:22px;font-weight:600;}
-.sn.s1{color:var(--c1);}.sn.s2{color:var(--c2);}.sn.s3{color:var(--c3);}.sn.s4{color:var(--c4);}
+.settle-summary{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px;}
+.sum-card{background:var(--bg2);border-radius:var(--r);padding:14px 12px;display:flex;align-items:center;gap:12px;}
+.sum-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.sum-label{font-size:13px;font-weight:500;flex:1;}
+.sum-count{font-size:24px;font-weight:700;}
+.sum-count.s1{color:var(--c1);}.sum-count.s2{color:var(--c2);}.sum-count.s3{color:var(--c3);}.sum-count.s4{color:var(--c4);}
+
 .se-tt{font-size:11px;font-weight:600;color:var(--text2);letter-spacing:.04em;margin-bottom:8px;}
 .rs{background:var(--bg2);border-radius:var(--r);padding:11px 12px;margin-bottom:7px;}
 .rl{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;margin-bottom:7px;}
@@ -95,7 +112,7 @@ input[type=file]{display:none;}
 .ntg{font-size:12px;padding:4px 10px;border-radius:6px;background:var(--bg);border:1px solid var(--bd);}
 .dv{border:none;border-top:1px solid var(--bd);margin:14px 0;}
 .pre{font-size:12px;line-height:1.9;white-space:pre-wrap;background:var(--bg2);padding:12px;border-radius:var(--r);font-family:monospace;margin-bottom:10px;}
-.ar{display:flex;gap:7px;}
+.ar{display:flex;gap:7px;margin-bottom:10px;}
 .ab{flex:1;padding:14px;border-radius:var(--r);border:1px solid var(--bd2);background:var(--bg);color:var(--text);font-size:13px;font-weight:500;cursor:pointer;text-align:center;}
 .ab:active{background:var(--bg2);}
 .ab.red{color:#E24B4A;font-weight:600;}
@@ -110,7 +127,6 @@ input[type=file]{display:none;}
 
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:rgba(20,20,20,0.92);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:300;white-space:nowrap;}
 .toast.on{opacity:1;}
-.empty{text-align:center;padding:3rem 1rem;color:var(--text2);font-size:14px;}
 </style>
 </head>
 <body>
@@ -120,13 +136,14 @@ input[type=file]{display:none;}
     <div class="hdr-row">
       <div>
         <div class="title" id="appTitle">회식 차수 관리</div>
-        <div class="sub" id="appSub">로딩 중...</div>
+        <div class="sub" id="appSub">명단 없음</div>
       </div>
       <div class="btns">
         <label class="btn" for="csvFile">CSV</label>
         <input type="file" id="csvFile" accept=".csv" onchange="handleCSV(this)">
-        <button class="btn" onclick="openInstall()">홈 추가</button>
-        <button class="btn" onclick="openConfirm()">초기화</button>
+        <button class="btn" onclick="openAdd()">추가</button>
+        
+        <button class="btn" onclick="openClearMembers()">명단 비우기</button><button class="btn" onclick="openConfirm()">초기화</button>
         <button class="btn pri" onclick="openSettle()">정산</button>
       </div>
     </div>
@@ -147,14 +164,32 @@ input[type=file]{display:none;}
     <div class="li"><div class="ld" style="background:var(--c2)"></div>2차</div>
     <div class="li"><div class="ld" style="background:var(--c3)"></div>3차</div>
     <div class="li"><div class="ld" style="background:var(--c4)"></div>4차</div>
-    <div style="margin-left:auto;display:flex;align-items:center;gap:5px;">
+    <div class="save-info">
       <div class="save-dot" id="saveDot"></div>
-      <span style="font-size:10px;color:var(--text2);" id="saveLabel">저장됨</span>
+      <span class="save-lbl" id="saveLbl">저장됨</span>
     </div>
   </div>
 </div>
 
 <div id="list"></div>
+
+<!-- 멤버 추가 시트 -->
+<div class="ov" id="ovAdd" style="display:none" onclick="closeAdd()">
+  <div class="sh" onclick="event.stopPropagation()">
+    <div class="handle"></div>
+    <div class="sh-hd">
+      <span class="sh-tt">멤버 추가</span>
+      <button class="sh-cl" onclick="closeAdd()">×</button>
+    </div>
+    <div class="add-row">
+      <input class="add-input" type="text" id="addName" placeholder="이름" maxlength="6">
+      <input class="add-input" type="text" id="addKisu" placeholder="기수 (예: 9기)" maxlength="5" style="max-width:100px;">
+      <button class="add-btn-ok" onclick="doAdd()">추가</button>
+    </div>
+    <div class="add-hint">이름을 입력하고 추가 버튼을 누르세요</div>
+    <div class="added-list" id="addedList"></div>
+  </div>
+</div>
 
 <!-- 정산 시트 -->
 <div class="ov" id="ovSettle" style="display:none" onclick="closeSettle()">
@@ -184,6 +219,22 @@ input[type=file]{display:none;}
   </div>
 </div>
 
+<!-- 명단 비우기 확인 -->
+<div class="ov" id="ovClearMembers" style="display:none" onclick="closeClearMembers()">
+  <div class="sh" onclick="event.stopPropagation()">
+    <div class="handle"></div>
+    <div style="text-align:center;padding:8px 0 20px;">
+      <div style="font-size:36px;margin-bottom:12px;">🗑️</div>
+      <div style="font-size:17px;font-weight:600;margin-bottom:8px;">명단 전체 비우기</div>
+      <div style="font-size:14px;color:var(--text2);line-height:1.6;">명단과 모든 차수 기록이<br>완전히 삭제됩니다.</div>
+    </div>
+    <div class="ar">
+      <button class="ab" onclick="closeClearMembers()">취소</button>
+      <button class="ab red" onclick="doClearMembers()">전체 삭제</button>
+    </div>
+  </div>
+</div>
+
 <!-- 홈 추가 안내 -->
 <div class="ov" id="ovInstall" style="display:none" onclick="closeInstall()">
   <div class="sh" onclick="event.stopPropagation()">
@@ -199,31 +250,19 @@ input[type=file]{display:none;}
 <div class="toast" id="toast"></div>
 
 <script>
-/* ── 기본 명단 ── */
-var DEFAULT = [
-  {id:1,name:"김민서",k:"1기"},{id:2,name:"박규진",k:"1기"},{id:3,name:"우승빈",k:"1기"},{id:4,name:"이상원",k:"1기"},{id:5,name:"최경진",k:"1기"},{id:6,name:"최은성",k:"1기"},{id:7,name:"강지호",k:"1기"},
-  {id:8,name:"김재이",k:"2기"},{id:9,name:"노병준",k:"2기"},{id:10,name:"오현우",k:"2기"},{id:11,name:"윤도원",k:"2기"},{id:12,name:"이인후",k:"2기"},{id:13,name:"조성훈",k:"2기"},{id:14,name:"박규령",k:"2기"},
-  {id:15,name:"성재민",k:"3기"},{id:16,name:"정연건",k:"3기"},{id:17,name:"홍유진",k:"3기"},{id:18,name:"송건",k:"3기"},
-  {id:19,name:"양윤정",k:"4기"},{id:20,name:"양지훈",k:"4기"},{id:21,name:"이영훈",k:"4기"},{id:22,name:"고다빈",k:"4기"},
-  {id:23,name:"김민정",k:"5기"},{id:24,name:"김신비",k:"5기"},{id:25,name:"박유민",k:"5기"},{id:26,name:"백지연",k:"5기"},{id:27,name:"서지원",k:"5기"},{id:28,name:"신재민",k:"5기"},{id:29,name:"유예빈",k:"5기"},{id:30,name:"이영석",k:"5기"},{id:31,name:"임유나",k:"5기"},{id:32,name:"조민송",k:"5기"},{id:33,name:"하지훈",k:"5기"},{id:34,name:"고성아",k:"5기"},
-  {id:35,name:"고은진",k:"6기"},{id:36,name:"김채린",k:"6기"},{id:37,name:"박규림",k:"6기"},{id:38,name:"박소정",k:"6기"},{id:39,name:"박수빈",k:"6기"},{id:40,name:"박준현",k:"6기"},{id:41,name:"박혜인",k:"6기"},{id:42,name:"배민석",k:"6기"},{id:43,name:"오태경",k:"6기"},{id:44,name:"이동헌",k:"6기"},{id:45,name:"이해인",k:"6기"},{id:46,name:"장원준",k:"6기"},{id:47,name:"최유진",k:"6기"},{id:48,name:"최윤호",k:"6기"},{id:49,name:"하현우",k:"6기"},{id:50,name:"한채림",k:"6기"},{id:51,name:"곽경진",k:"6기"},
-  {id:52,name:"배은진",k:"7기"},{id:53,name:"백서영",k:"7기"},{id:54,name:"손동언",k:"7기"},{id:55,name:"송소연",k:"7기"},{id:56,name:"신희원",k:"7기"},{id:57,name:"우민지",k:"7기"},{id:58,name:"이수민",k:"7기"},{id:59,name:"정애윤",k:"7기"},{id:60,name:"정준현",k:"7기"},{id:61,name:"최재환",k:"7기"},{id:62,name:"최재희",k:"7기"},{id:63,name:"천지운",k:"7기"},{id:64,name:"이동욱",k:"7기"},
-  {id:65,name:"고대훈",k:"8기"},{id:66,name:"임재훈",k:"8기"},{id:67,name:"고경민",k:"8기"},{id:68,name:"김예진",k:"8기"},{id:69,name:"김영서",k:"8기"},{id:70,name:"유지연",k:"8기"},{id:71,name:"천승민",k:"8기"},{id:72,name:"이호성",k:"8기"},{id:73,name:"전채우",k:"8기"},{id:74,name:"방현정",k:"8기"},{id:75,name:"정의석",k:"8기"},{id:76,name:"정준희",k:"8기"},{id:77,name:"염효준",k:"8기"},
-  {id:78,name:"나서현",k:"9기"},{id:79,name:"예영석",k:"9기"},{id:80,name:"박소희",k:"9기"},{id:81,name:"조민기",k:"9기"},{id:82,name:"김지원",k:"9기"},{id:83,name:"전세현",k:"9기"},{id:84,name:"임주희",k:"9기"},{id:85,name:"이솔",k:"9기"},{id:86,name:"박유민",k:"9기"},{id:87,name:"신현수",k:"9기"},{id:88,name:"허가인",k:"9기"},{id:89,name:"이수현",k:"9기"},{id:90,name:"정민선",k:"9기"},{id:91,name:"김준섭",k:"9기"},{id:92,name:"윤지웅",k:"9기"},{id:93,name:"이현진",k:"9기"},{id:94,name:"이지원",k:"9기"},{id:95,name:"고영우",k:"9기"},{id:96,name:"이태훈",k:"9기"},{id:97,name:"박찬영",k:"9기"},{id:98,name:"곽재연",k:"9기"},{id:99,name:"김라희",k:"9기"},{id:100,name:"양수려",k:"9기"},{id:101,name:"함예은",k:"9기"},{id:102,name:"유송화",k:"9기"},{id:103,name:"신재승",k:"9기"},{id:104,name:"김윤재",k:"9기"},{id:105,name:"유새봄",k:"9기"},{id:106,name:"권진하",k:"9기"},{id:107,name:"김시환",k:"9기"},{id:108,name:"박소윤",k:"9기"},{id:109,name:"정지민",k:"9기"},{id:110,name:"주환희",k:"9기"}
-];
-
 var R  = ["1차","2차","3차","4차"];
 var PC = ["a1","a2","a3","a4"];
 var RC = ["o1","o2","o3","o4"];
 var RD = ["var(--c1)","var(--c2)","var(--c3)","var(--c4)"];
 var SC = ["s1","s2","s3","s4"];
-var LS_ATT  = "hoesik_att";
-var LS_MEM  = "hoesik_mem";
+var LS_ATT = "hoesik_att";
+var LS_MEM = "hoesik_mem";
 
 var members = [];
-var att     = {};
-var exp     = null;
-var sort    = 0;
+var att = {};
+var exp = null;
+var sort = 0;
+var nextId = 1;
 
 /* ── localStorage ── */
 function saveAll() {
@@ -241,23 +280,19 @@ function loadAll() {
     var savedMem = localStorage.getItem(LS_MEM);
     if (savedMem) {
       members = JSON.parse(savedMem);
-    } else {
-      members = DEFAULT.slice();
+      nextId = members.length ? Math.max.apply(null, members.map(function(m){ return m.id; })) + 1 : 1;
     }
     var savedAtt = localStorage.getItem(LS_ATT);
     if (savedAtt) {
       var obj = JSON.parse(savedAtt);
       for (var id in obj) { att[id] = new Set(obj[id]); }
     }
-  } catch(e) {
-    members = DEFAULT.slice();
-    att = {};
-  }
+  } catch(e) { members = []; att = {}; }
 }
 
 function setSaveLabel(msg, ok) {
   var dot = document.getElementById("saveDot");
-  var lbl = document.getElementById("saveLabel");
+  var lbl = document.getElementById("saveLbl");
   if (dot) dot.style.background = ok ? "#4CAF50" : "#E24B4A";
   if (lbl) lbl.textContent = msg;
 }
@@ -312,6 +347,7 @@ function handleCSV(inp) {
     }
     if (!parsed.length) { showToast("유효한 이름을 찾지 못했습니다"); return; }
     members=parsed; att={}; exp=null;
+    nextId = parsed.length + 1;
     document.getElementById("appTitle").textContent = f.name.replace(/\.csv$/i,"");
     saveAll();
     showToast(parsed.length+"명 불러왔습니다");
@@ -321,9 +357,73 @@ function handleCSV(inp) {
   inp.value="";
 }
 
+/* ── 멤버 직접 추가 ── */
+function openAdd() {
+  document.getElementById("addName").value = "";
+  document.getElementById("addKisu").value = "";
+  renderAddedList();
+  document.getElementById("ovAdd").style.display = "flex";
+  setTimeout(function(){ document.getElementById("addName").focus(); }, 200);
+}
+function closeAdd() {
+  document.getElementById("ovAdd").style.display = "none";
+  render();
+}
+
+function doAdd() {
+  var name = document.getElementById("addName").value.trim();
+  var kisu = document.getElementById("addKisu").value.trim();
+  if (!name) { showToast("이름을 입력해주세요"); return; }
+  if (name.length < 2) { showToast("이름이 너무 짧습니다"); return; }
+  var dup = members.filter(function(m){ return m.name === name; });
+  if (dup.length) { showToast("이미 있는 이름입니다"); return; }
+  var km = kisu.match(/\d+기/);
+  members.push({id: nextId++, name: name, k: km ? km[0] : kisu});
+  saveAll();
+  document.getElementById("addName").value = "";
+  document.getElementById("addKisu").value = "";
+  document.getElementById("addName").focus();
+  renderAddedList();
+  showToast(name + " 추가됐습니다");
+}
+
+function doDelMember(id) {
+  members = members.filter(function(m){ return m.id !== id; });
+  delete att[id];
+  saveAll();
+  renderAddedList();
+}
+
+function renderAddedList() {
+  var html = "";
+  var list = members.slice().sort(function(a,b){
+    var an=parseInt(a.k)||0, bn=parseInt(b.k)||0;
+    return an!==bn ? an-bn : a.name.localeCompare(b.name,"ko");
+  });
+  if (!list.length) {
+    html = "<div style='text-align:center;padding:1.5rem;color:var(--text2);font-size:13px'>아직 추가된 멤버가 없습니다</div>";
+  }
+  for (var i=0; i<list.length; i++) {
+    var m = list[i];
+    html += "<div class='added-item'>";
+    html += "<div><span class='added-name'>"+m.name+"</span> <span class='added-k'>"+m.k+"</span></div>";
+    html += "<button class='del-btn' onclick='doDelMember("+m.id+")'>×</button>";
+    html += "</div>";
+  }
+  document.getElementById("addedList").innerHTML = html;
+  document.getElementById("appSub").textContent = "총 "+members.length+"명";
+}
+
+/* ── Enter키 추가 ── */
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Enter" && document.getElementById("ovAdd").style.display === "flex") {
+    doAdd();
+  }
+});
+
 /* ── 차수 토글 ── */
-function toggleRound(id,ri) {
-  if (!att[id]) att[id]=new Set();
+function toggleRound(id, ri) {
+  if (!att[id]) att[id] = new Set();
   att[id].has(R[ri]) ? att[id].delete(R[ri]) : att[id].add(R[ri]);
   saveAll();
   render();
@@ -344,20 +444,29 @@ function render() {
   document.getElementById("appSub").textContent = "총 "+members.length+"명 · 참여 "+attended+"명";
   document.getElementById("cnt").textContent = filtered.length+"명";
 
-  if (!filtered.length) {
-    document.getElementById("list").innerHTML = "<div class='empty'>검색 결과 없음</div>";
+  if (!members.length) {
+    document.getElementById("list").innerHTML =
+      "<div class='empty-state'><div class='big'>📋</div><div class='msg'>명단이 비어있습니다<br><b>CSV 업로드</b> 또는 <b>추가 버튼</b>으로<br>멤버를 넣어주세요</div></div>";
     setTop(); return;
   }
 
-  var html="";
+  if (!filtered.length) {
+    document.getElementById("list").innerHTML = "<div style='text-align:center;padding:3rem 1rem;color:var(--text2);font-size:14px'>검색 결과 없음</div>";
+    setTop(); return;
+  }
+
+  var html = "";
   for (var i=0; i<filtered.length; i++) {
-    var m=filtered[i];
-    var a=att[m.id]||new Set();
-    var pills=R.map(function(r,ri){ return "<span class='p "+(a.has(r)?PC[ri]:"")+"'>"+r+"</span>"; }).join("");
+    var m = filtered[i];
+    var a = att[m.id] || new Set();
+    var pills = R.map(function(r,ri){ return "<span class='p "+(a.has(r)?PC[ri]:"")+"'>"+r+"</span>"; }).join("");
     html += "<div class='card'>";
     html += "<div class='ch' onclick='toggleExp("+m.id+")'>";
     html += "<div class='na'><span class='nm'>"+m.name+"</span>"+(m.k?"<span class='ks'>"+m.k+"</span>":"")+"</div>";
-    html += "<div class='ps'>"+pills+"</div></div>";
+    html += "<div style='display:flex;align-items:center;gap:6px'>";
+    html += "<div class='ps'>"+pills+"</div>";
+    html += "<button onclick='event.stopPropagation();confirmDelMember("+m.id+",""+m.name+"")' style='width:22px;height:22px;border-radius:50%;border:none;background:var(--bg3);color:var(--text2);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1'>×</button>";
+    html += "</div></div>";
     if (exp===m.id) {
       html += "<div class='rp'>";
       for (var ri=0; ri<R.length; ri++) {
@@ -371,57 +480,106 @@ function render() {
   setTop();
 }
 
-/* ── 정산 ── */
+/* ── 정산 텍스트 ── */
 function buildText() {
-  var date=new Date().toLocaleDateString("ko-KR");
-  var lines=["UPSC 회식 정산 · "+date,""];
+  var date = new Date().toLocaleDateString("ko-KR");
+  var lines = ["UPSC 회식 정산 · "+date, ""];
+  lines.push("[ 차수별 참여 인원 ]");
   for (var i=0; i<R.length; i++) {
-    var r=R[i];
-    var who=members.filter(function(m){ return att[m.id]&&att[m.id].has(r); });
-    lines.push("["+r+"] "+who.length+"명 참여");
-    if (who.length) lines.push(who.map(function(m){ return m.name; }).join(", "));
-    lines.push("");
+    var r = R[i];
+    var who = members.filter(function(m){ return att[m.id]&&att[m.id].has(r); });
+    lines.push(r+" : "+who.length+"명"+(who.length ? " ("+who.map(function(m){ return m.name; }).join(", ")+")" : ""));
   }
-  lines.push("─────────────","개인별 요약","─────────────");
-  var ap=members.filter(function(m){ return att[m.id]&&att[m.id].size>0; });
+  lines.push("");
+  lines.push("─────────────");
+  lines.push("[ 개인별 참여 차수 ]");
+  var ap = members.filter(function(m){ return att[m.id]&&att[m.id].size>0; });
   if (ap.length) {
     ap.forEach(function(m){
-      var rs=R.filter(function(r){ return att[m.id].has(r); });
+      var rs = R.filter(function(r){ return att[m.id].has(r); });
       lines.push(m.name+(m.k?"("+m.k+")":"")+": "+rs.join(", "));
     });
-  } else lines.push("참여 기록 없음");
+  } else {
+    lines.push("참여 기록 없음");
+  }
   return lines.join("\n");
 }
 
+/* ── 정산 시트 ── */
 function openSettle() {
-  var rc=R.map(function(r){ return members.filter(function(m){ return att[m.id]&&att[m.id].has(r); }); });
-  var stats=R.map(function(r,i){ return "<div class='sc'><div class='sl'>"+r+"</div><div class='sn "+SC[i]+"'>"+rc[i].length+"</div></div>"; }).join("");
-  var secs=R.map(function(r,i){
-    var who=rc[i];
-    var tags=who.length?who.map(function(m){ return "<span class='ntg'>"+m.name+"</span>"; }).join(""):"<span style='font-size:12px;color:var(--text2)'>참여 없음</span>";
-    return "<div class='rs'><div class='rl'><div class='rd' style='background:"+RD[i]+"'></div>"+r+" · "+who.length+"명</div><div class='nt'>"+tags+"</div></div>";
-  }).join("");
-  var pre=buildText().replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-  document.getElementById("settleBody").innerHTML=
-    "<div class='sg'>"+stats+"</div>"+
-    "<div class='se-tt'>차수별 참여 현황</div>"+secs+
-    "<hr class='dv'>"+
-    "<div class='se-tt' style='margin-bottom:8px'>텍스트 정산표</div>"+
-    "<div class='pre'>"+pre+"</div>"+
-    "<div class='ar'>"+
-      "<button class='ab' onclick='doCopy()'>클립보드 복사</button>"+
-      "<button class='ab' onclick='doShare()'>공유하기</button>"+
-    "</div>"+
-    "<div style='margin-top:10px'>"+
-      "<div style='font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:600;letter-spacing:.04em'>전체 선택 후 복사</div>"+
-      "<textarea id='resultTA' readonly onclick='this.select()' style='width:100%;height:160px;padding:10px;border-radius:10px;border:1px solid var(--bd2);background:var(--bg2);color:var(--text);font-family:monospace;font-size:11px;line-height:1.8;resize:none;'></textarea>"+
-      "<div style='font-size:11px;color:var(--text2);margin-top:5px'>👆 텍스트 누르면 전체 선택됩니다</div>"+
+  if (!members.length) { showToast("명단이 없습니다"); return; }
+  var rc = R.map(function(r){ return members.filter(function(m){ return att[m.id]&&att[m.id].has(r); }); });
+
+  /* 차수별 인원 카드 - 크게 강조 */
+  var summary = "<div class='settle-summary'>";
+  for (var i=0; i<R.length; i++) {
+    summary += "<div class='sum-card'>";
+    summary += "<div class='sum-dot' style='background:"+RD[i]+"'></div>";
+    summary += "<div class='sum-label'>"+R[i]+"</div>";
+    summary += "<div class='sum-count "+SC[i]+"'>"+rc[i].length+"<span style='font-size:13px;font-weight:500'>명</span></div>";
+    summary += "</div>";
+  }
+  summary += "</div>";
+
+  /* 차수별 명단 */
+  var secs = "";
+  for (var i=0; i<R.length; i++) {
+    var who = rc[i];
+    var tags = who.length ? who.map(function(m){ return "<span class='ntg'>"+m.name+"</span>"; }).join("") : "<span style='font-size:12px;color:var(--text2)'>참여 없음</span>";
+    secs += "<div class='rs'><div class='rl'><div class='rd' style='background:"+RD[i]+"'></div>"+R[i]+" · "+who.length+"명</div><div class='nt'>"+tags+"</div></div>";
+  }
+
+  var pre = buildText().replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  var txt = buildText();
+
+  document.getElementById("settleBody").innerHTML =
+    summary +
+    "<div class='se-tt'>차수별 참여 명단</div>" + secs +
+    "<hr class='dv'>" +
+    "<div class='se-tt' style='margin-bottom:8px'>텍스트 정산표</div>" +
+    "<div class='pre'>"+pre+"</div>" +
+    "<div class='ar'>" +
+      "<button class='ab' onclick='doCopy()'>클립보드 복사</button>" +
+      "<button class='ab' onclick='doShare()'>공유하기</button>" +
+    "</div>" +
+    "<div style='margin-top:2px'>" +
+      "<div style='font-size:11px;color:var(--text2);margin-bottom:5px;font-weight:600;letter-spacing:.04em'>전체 선택 후 복사</div>" +
+      "<textarea id='resultTA' readonly onclick='this.select()' style='width:100%;height:150px;padding:10px;border-radius:10px;border:1px solid var(--bd2);background:var(--bg2);color:var(--text);font-family:monospace;font-size:11px;line-height:1.8;resize:none;'></textarea>" +
+      "<div style='font-size:11px;color:var(--text2);margin-top:4px'>👆 텍스트 누르면 전체 선택됩니다</div>" +
     "</div>";
-  document.getElementById("ovSettle").style.display="flex";
-  var ta=document.getElementById("resultTA");
-  if(ta) ta.value=buildText();
+
+  document.getElementById("ovSettle").style.display = "flex";
+  var ta = document.getElementById("resultTA");
+  if (ta) ta.value = txt;
 }
 function closeSettle(){ document.getElementById("ovSettle").style.display="none"; }
+
+/* ── 명단 비우기 ── */
+function openClearMembers(){ document.getElementById("ovClearMembers").style.display="flex"; }
+function closeClearMembers(){ document.getElementById("ovClearMembers").style.display="none"; }
+function doClearMembers(){
+  members=[]; att={}; exp=null; nextId=1;
+  saveAll();
+  closeClearMembers();
+  render();
+  showToast("명단이 비워졌습니다");
+}
+
+/* ── 개별 멤버 삭제 (메인 리스트) ── */
+var _delId=null, _delName="";
+function confirmDelMember(id,name){
+  _delId=id; _delName=name;
+  if(confirm(name+"을(를) 명단에서 삭제할까요?")){
+    doDelMemberMain();
+  }
+}
+function doDelMemberMain(){
+  members=members.filter(function(m){ return m.id!==_delId; });
+  delete att[_delId];
+  saveAll();
+  render();
+  showToast(_delName+" 삭제됐습니다");
+}
 
 /* ── 초기화 ── */
 function openConfirm(){ document.getElementById("ovConfirm").style.display="flex"; }
@@ -436,31 +594,31 @@ function doReset(){
 
 /* ── 홈 추가 안내 ── */
 function openInstall() {
-  var ios=/iPad|iPhone|iPod/.test(navigator.userAgent);
-  var html="<div class='inst-box'><div class='inst-os'>"+(ios?"아이폰 (Safari)":"안드로이드 (Chrome)")+"</div>";
+  var ios = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  var html = "<div class='inst-box'><div class='inst-os'>"+(ios?"아이폰 (Safari)":"안드로이드 (Chrome)")+"</div>";
   if (ios) {
-    html+="<div class='inst-step'><div class='inst-num'>1</div><div class='inst-txt'>하단 가운데 <b>공유 버튼</b>(네모+화살표)을 누릅니다</div></div>";
-    html+="<div class='inst-step'><div class='inst-num'>2</div><div class='inst-txt'><b>홈 화면에 추가</b>를 선택합니다</div></div>";
-    html+="</div><div class='inst-note'>반드시 <b>Safari</b>로 열어야 합니다. Chrome 앱으로 여셨다면 Safari로 바꿔주세요.</div>";
+    html += "<div class='inst-step'><div class='inst-num'>1</div><div class='inst-txt'>하단 가운데 <b>공유 버튼</b>(네모+화살표)을 누릅니다</div></div>";
+    html += "<div class='inst-step'><div class='inst-num'>2</div><div class='inst-txt'><b>홈 화면에 추가</b>를 선택합니다</div></div>";
+    html += "</div><div class='inst-note'>반드시 <b>Safari</b>로 열어야 합니다.</div>";
   } else {
-    html+="<div class='inst-step'><div class='inst-num'>1</div><div class='inst-txt'>우측 상단 <b>점 세 개(⋮) 메뉴</b>를 누릅니다</div></div>";
-    html+="<div class='inst-step'><div class='inst-num'>2</div><div class='inst-txt'><b>홈 화면에 추가</b> 또는 <b>앱 설치</b>를 선택합니다</div></div>";
-    html+="</div><div class='inst-note'>GitHub Pages 주소(https://...)로 열었을 때만 나타납니다.</div>";
+    html += "<div class='inst-step'><div class='inst-num'>1</div><div class='inst-txt'>우측 상단 <b>점 세 개(⋮) 메뉴</b>를 누릅니다</div></div>";
+    html += "<div class='inst-step'><div class='inst-num'>2</div><div class='inst-txt'><b>홈 화면에 추가</b> 또는 <b>앱 설치</b>를 선택합니다</div></div>";
+    html += "</div><div class='inst-note'>GitHub Pages 주소(https://...)로 열었을 때만 나타납니다.</div>";
   }
-  document.getElementById("installBody").innerHTML=html;
-  document.getElementById("ovInstall").style.display="flex";
+  document.getElementById("installBody").innerHTML = html;
+  document.getElementById("ovInstall").style.display = "flex";
 }
 function closeInstall(){ document.getElementById("ovInstall").style.display="none"; }
 
-/* ── 복사 / 저장 ── */
+/* ── 복사 / 공유 ── */
 function doCopy() {
-  var txt=buildText();
+  var txt = buildText();
   if (navigator.clipboard) {
     navigator.clipboard.writeText(txt).then(function(){ showToast("복사됐습니다"); }).catch(function(){ fallback(txt); });
   } else fallback(txt);
 }
 function fallback(txt) {
-  var ta=document.createElement("textarea");
+  var ta = document.createElement("textarea");
   ta.value=txt; ta.style.cssText="position:fixed;opacity:0;top:0;left:0;";
   document.body.appendChild(ta); ta.focus(); ta.select();
   document.execCommand("copy"); document.body.removeChild(ta);
@@ -469,30 +627,25 @@ function fallback(txt) {
 function doShare() {
   var txt = buildText();
   if (navigator.share) {
-    navigator.share({
-      title: "회식 정산 결과",
-      text: txt
-    }).catch(function(){});
+    navigator.share({title:"회식 정산 결과", text:txt}).catch(function(){});
   } else if (navigator.clipboard) {
-    navigator.clipboard.writeText(txt).then(function(){ showToast("복사됐습니다 (공유 미지원)"); }).catch(function(){ fallback(txt); });
-  } else {
-    fallback(txt);
-  }
+    navigator.clipboard.writeText(txt).then(function(){ showToast("복사됐습니다"); }).catch(function(){ fallback(txt); });
+  } else fallback(txt);
 }
 
 /* ── 토스트 ── */
 function showToast(msg) {
-  var t=document.getElementById("toast");
+  var t = document.getElementById("toast");
   t.textContent=msg; t.className="toast on";
-  setTimeout(function(){ t.className="toast"; },2200);
+  setTimeout(function(){ t.className="toast"; }, 2200);
 }
 
-
-
-/* ── 초기화 ── */
+/* ── 서비스워커 ── */
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js');
 }
+
+/* ── 시작 ── */
 window.addEventListener("load", function() {
   loadAll();
   render();
