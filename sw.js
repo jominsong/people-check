@@ -1,4 +1,4 @@
-var CACHE = 'hoesik-v1';
+var CACHE = 'hoesik-v3';
 var FILES = ['./', './index.html', './manifest.json'];
 
 self.addEventListener('install', function(e) {
@@ -23,15 +23,17 @@ self.addEventListener('activate', function(e) {
 });
 
 self.addEventListener('fetch', function(e) {
+  // 네트워크 우선 → 실패시 캐시
   e.respondWith(
-    caches.match(e.request).then(function(cached) {
-      return cached || fetch(e.request).then(function(res) {
-        return caches.open(CACHE).then(function(cache) {
-          cache.put(e.request, res.clone());
-          return res;
-        });
-      }).catch(function() {
-        return caches.match('./index.html');
+    fetch(e.request).then(function(res) {
+      var copy = res.clone();
+      caches.open(CACHE).then(function(cache) {
+        cache.put(e.request, copy);
+      });
+      return res;
+    }).catch(function() {
+      return caches.match(e.request).then(function(cached) {
+        return cached || caches.match('./index.html');
       });
     })
   );
