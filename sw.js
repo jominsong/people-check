@@ -1,4 +1,4 @@
-var CACHE = 'hoesik-v3';
+var CACHE = 'hoesik-v4';
 var FILES = ['./', './index.html', './manifest.json'];
 
 self.addEventListener('install', function(e) {
