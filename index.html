@@ -410,8 +410,14 @@ function refresh(){updateSub();if(mode){renderStatus();renderMl();renderLinks();
 /* ── 로그인 ── */
 window.doLogin=function(){
   const pw=document.getElementById('pwInput').value;
-  if(pw===adminPass){document.getElementById('pwInput').value='';document.getElementById('pwErr').textContent='';show('scMode');}
-  else document.getElementById('pwErr').textContent='비밀번호가 틀렸습니다';
+  if(pw===adminPass){
+    localStorage.setItem('upsc_auth', pw);
+    document.getElementById('pwInput').value='';
+    document.getElementById('pwErr').textContent='';
+    show('scMode');
+  } else {
+    document.getElementById('pwErr').textContent='비밀번호가 틀렸습니다';
+  }
 };
 
 /* ── 모드 선택 ── */
@@ -650,9 +656,12 @@ function pvShowToast(msg){const t=document.getElementById('pvToast');t.textConte
 listen();
 setTimeout(()=>{
   document.getElementById('scLoad').style.display='none';
-  if(urlName)show('scPart');
+  if(urlName){show('scPart');return;}
+  /* 저장된 비밀번호로 자동 로그인 */
+  const saved=localStorage.getItem('upsc_auth');
+  if(saved&&saved===adminPass){show('scMode');}
   else show('scLogin');
-},1200);
+},1500);
 </script>
 </body>
 </html>
