@@ -183,6 +183,30 @@ input[type=file]{display:none;}
 .cf-tt{font-size:17px;font-weight:600;margin-bottom:8px;}
 .cf-desc{font-size:14px;color:var(--text2);line-height:1.6;}
 
+
+/* ── 현황 탭 ── */
+.stab{flex:1;padding:10px;border-radius:var(--r);border:1.5px solid var(--bd2);background:var(--bg2);color:var(--text2);font-size:13px;font-weight:500;cursor:pointer;text-align:center;}
+.stab.on{border-color:var(--acc);color:var(--acc);background:var(--bg);}
+.stcard{border:1px solid var(--bd);border-radius:var(--r);background:var(--bg);margin-bottom:5px;overflow:hidden;}
+.stch{display:flex;align-items:center;padding:13px 12px;cursor:pointer;gap:8px;}
+.stch:active{background:var(--bg2);}
+.stnm{font-size:15px;font-weight:500;flex:1;}
+.stks{font-size:10px;color:var(--text2);background:var(--bg2);padding:2px 6px;border-radius:4px;}
+.badges{display:flex;gap:3px;flex-wrap:wrap;}
+.badge{font-size:9px;padding:2px 6px;border-radius:3px;background:var(--bg3);color:var(--text2);}
+.bs0{background:var(--s1);color:#fff;}.bs1{background:var(--s2);color:#fff;}.bs2{background:var(--s3);color:#fff;}.bs3{background:var(--s4);color:#fff;}
+.bd0{background:var(--d1);color:#fff;}.bd1{background:var(--d2);color:#fff;}.bd2{background:var(--d3);color:#fff;}.bd3{background:var(--d4);color:#fff;}
+.strp{display:flex;gap:6px;padding:9px 12px;background:var(--bg2);flex-wrap:wrap;}
+.strb{flex:1;min-width:calc(50% - 3px);padding:12px 4px;border-radius:var(--r);border:1px solid var(--bd2);background:var(--bg);font-size:12px;font-weight:500;cursor:pointer;text-align:center;}
+.strb.on0{background:var(--s1);border-color:var(--s1);color:#fff;}
+.strb.on1{background:var(--s2);border-color:var(--s2);color:#fff;}
+.strb.on2{background:var(--s3);border-color:var(--s3);color:#fff;}
+.strb.on3{background:var(--s4);border-color:var(--s4);color:#fff;}
+.strb.od0{background:var(--d1);border-color:var(--d1);color:#fff;}
+.strb.od1{background:var(--d2);border-color:var(--d2);color:#fff;}
+.strb.od2{background:var(--d3);border-color:var(--d3);color:#fff;}
+.strb.od3{background:var(--d4);border-color:var(--d4);color:#fff;}
+
 .empty-state{text-align:center;padding:3rem 1rem;color:var(--text2);font-size:14px;line-height:1.8;}
 .toast{position:fixed;bottom:calc(var(--bh)+10px);left:50%;transform:translateX(-50%);background:rgba(20,20,20,0.92);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:500;white-space:nowrap;}
 .toast.on{opacity:1;}
@@ -271,6 +295,17 @@ input[type=file]{display:none;}
       </div>
     </div>
 
+    <!-- 현황 탭 -->
+    <div class="a-tab" id="tabStatus">
+      <div class="tab-inner">
+        <div style="display:flex;gap:8px;margin-bottom:10px;">
+          <button class="stab on" id="stab0" onclick="setStab(0)">🎯 사격</button>
+          <button class="stab"    id="stab1" onclick="setStab(1)">🍻 회식</button>
+        </div>
+        <div id="statusList"></div>
+      </div>
+    </div>
+
     <!-- 링크 탭 -->
     <div class="a-tab" id="tabLinks">
       <div class="tab-inner">
@@ -328,14 +363,18 @@ input[type=file]{display:none;}
       추가
     </button>
     <button class="atb" id="atb1" onclick="setAtab(1)">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      현황
+    </button>
+    <button class="atb" id="atb2" onclick="setAtab(2)">
       <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
       링크
     </button>
-    <button class="atb" id="atb2" onclick="setAtab(2)">
+    <button class="atb" id="atb3" onclick="setAtab(3)">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
       관리
     </button>
-    <button class="atb" id="atb3" onclick="setAtab(3)">
+    <button class="atb" id="atb4" onclick="setAtab(4)">
       <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
       정산
     </button>
@@ -468,12 +507,12 @@ window.enterMode=function(m){
 window.goBack=function(){mode=null;show('scMode');};
 
 /* ── 탭 ── */
-const TABS=['tabAdd','tabLinks','tabMgmt','tabSettle'];
+const TABS=['tabAdd','tabStatus','tabLinks','tabMgmt','tabSettle'];
 window.setAtab=function(n){
   atab=n;
   TABS.forEach((id,i)=>document.getElementById(id).className='a-tab'+(i===n?' on':''));
-  for(let i=0;i<4;i++)document.getElementById('atb'+i).className='atb'+(i===n?' on':'');
-  if(n===3)renderSettle();
+  for(let i=0;i<5;i++)document.getElementById('atb'+i).className='atb'+(i===n?' on':'');
+  if(n===4)renderSettle();
 };
 function setPad(){setTimeout(()=>{const h=document.getElementById('aTop').offsetHeight;document.getElementById('aContent').style.paddingTop=h+'px';},100);}
 window.addEventListener('resize',setPad);
@@ -488,7 +527,34 @@ function updateSub(){
 
 function sorted(list){return[...list].sort((a,b)=>{const an=parseInt(a.k)||0,bn=parseInt(b.k)||0;return an!==bn?an-bn:a.name.localeCompare(b.name,'ko');});}
 
-function renderAll(){updateSub();renderMl();renderLinks();renderSettle();}
+
+/* ── 현황 탭 ── */
+let stab=0,stExp=null;
+window.setStab=function(n){stab=n;stExp=null;['stab0','stab1'].forEach((id,i)=>document.getElementById(id).className='stab'+(i===n?' on':''));renderStatus();};
+window.toggleStExp=function(id){stExp=stExp===id?null:id;renderStatus();};
+window.toggleStatus=async function(id,ri){
+  const data=stab===0?shooting:dinner,opts=stab===0?SOPTS:DOPTS;
+  if(!data[id])data[id]=new Set();
+  data[id].has(opts[ri])?data[id].delete(opts[ri]):data[id].add(opts[ri]);
+  renderStatus();
+  if(stab===0)await saveS();else await saveD();
+};
+function renderStatus(){
+  const el=document.getElementById('statusList');if(!el)return;
+  const list=sorted([...members]);
+  const opts=stab===0?SOPTS:DOPTS,data=stab===0?shooting:dinner;
+  const onCls=stab===0?['on0','on1','on2','on3']:['od0','od1','od2','od3'];
+  const bgCls=stab===0?['bs0','bs1','bs2','bs3']:['bd0','bd1','bd2','bd3'];
+  if(!list.length){el.innerHTML="<div class='empty-state'>명단이 없습니다</div>";return;}
+  el.innerHTML=list.map(m=>{
+    const sel=data[m.id]||new Set();
+    const badges=opts.map((o,i)=>sel.has(o)?`<span class='badge ${bgCls[i]}'>${o}</span>`:'').join('');
+    const rp=stExp===m.id?`<div class='strp'>${opts.map((o,i)=>`<button class='strb ${sel.has(o)?onCls[i]:""}' onclick='event.stopPropagation();toggleStatus(${m.id},${i})'>${o}</button>`).join('')}</div>`:'';
+    return`<div class='stcard'><div class='stch' onclick='toggleStExp(${m.id})'><span class='stnm'>${m.name}</span>${m.k?`<span class='stks'>${m.k}</span>`:''}<div class='badges'>${badges}</div></div>${rp}</div>`;
+  }).join('');
+}
+
+function renderAll(){updateSub();renderMl();renderStatus();renderLinks();renderSettle();}
 
 /* ── 추가 탭 ── */
 window.doAdd=async function(){
