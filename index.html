@@ -699,10 +699,13 @@ window.submitPvName=function(){
   const errEl=document.getElementById('pvNameErr');
   const candEl=document.getElementById('pvCandidateList');
   if(!name){if(errEl)errEl.textContent='이름을 입력해주세요';return;}
+  if(name.length<2){if(errEl)errEl.textContent='이름이 너무 짧습니다';return;}
   const matches=members.filter(m=>m.name===name);
   if(!matches.length){
-    if(errEl)errEl.textContent='등록되지 않은 이름입니다. 다시 확인해주세요';
-    if(candEl)candEl.innerHTML='';
+    /* 명단에 없는 이름: 임시 객체로 진행, 실제 추가는 버튼 클릭 시점에 처리 */
+    pvMember={id:null,name,k:''};
+    pvStep='check';
+    renderParticipant();
     return;
   }
   if(matches.length===1){pvMember=matches[0];pvStep='check';renderParticipant();return;}
@@ -713,14 +716,24 @@ window.choosePvCandidate=function(id){
   pvMember=members.find(m=>m.id===id);
   if(pvMember){pvStep='check';renderParticipant();}
 };
-window.pvToggle=async function(id,ri){
+window.pvToggle=async function(ri){
+  let wasNew=false;
+  if(pvMember.id==null){
+    wasNew=true;
+    const newMember={id:nid++,name:pvMember.name,k:pvMember.k||''};
+    members.push(newMember);
+    await saveM();
+    pvMember=newMember;
+  }
   const opts=pvCategory==='shoot'?SOPTS:DOPTS,data=pvCategory==='shoot'?shooting:dinner;
-  if(!data[id])data[id]=new Set();
+  if(!data[pvMember.id])data[pvMember.id]=new Set();
   const o=opts[ri];
-  data[id].has(o)?data[id].delete(o):data[id].add(o);
+  const turnedOn=!data[pvMember.id].has(o);
+  turnedOn?data[pvMember.id].add(o):data[pvMember.id].delete(o);
   renderParticipant();
   if(pvCategory==='shoot')await saveS();else await saveD();
-  pvShowToast(data[id].has(o)?o+' 체크됐습니다':o+' 해제됐습니다');
+  if(wasNew)pvShowToast(`명단에 추가됐습니다 · ${o} ${turnedOn?'체크':'해제'}됐습니다`);
+  else pvShowToast(`${o} ${turnedOn?'체크':'해제'}됐습니다`);
 };
 window.sharePublicLink=function(){
   const url=getBase()+'?p=1';
@@ -771,14 +784,15 @@ function renderParticipant(){
     const opts=pvCategory==='shoot'?SOPTS:DOPTS;
     const data=pvCategory==='shoot'?shooting:dinner;
     const onCls=pvCategory==='shoot'?['ps0','ps1','ps2','ps3']:['pd0','pd1','pd2','pd3'];
-    const sel=data[m.id]||new Set();
+    const sel=(m.id!=null&&data[m.id])?data[m.id]:new Set();
     const checked=[...sel];
+    const isNew=(m.id==null);
     head.innerHTML=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div><div class="pv-greeting" style="margin-bottom:2px;">${m.name}님 안녕하세요!</div><div class="pv-sub" style="margin-bottom:0;">참여한 항목을 눌러 체크해주세요</div></div></div></div>`;
     body.innerHTML=`<div class="pv-body">
       <div class="pv-sec-title">${pvCategory==='shoot'?'🎯 사격 참여 체크':'🍻 회식 참여 체크'}</div>
-      <div class="pv-grid">${opts.map((o,i)=>`<button class="pv-btn ${sel.has(o)?onCls[i]:''}" onclick="pvToggle(${m.id},${i})">${o}</button>`).join('')}</div>
+      <div class="pv-grid">${opts.map((o,i)=>`<button class="pv-btn ${sel.has(o)?onCls[i]:''}" onclick="pvToggle(${i})">${o}</button>`).join('')}</div>
       <div class="pv-done ${pvCategory==='shoot'?'sd':'dd'} ${checked.length?'show':''}">${checked.length?'✅ '+checked.join(' · ')+' 선택됨':''}</div>
-      <p class="pv-notice">선택을 바꾸려면 다시 누르면 됩니다<br>이 링크는 누구나 접속 가능하니 본인 이름만 체크해주세요</p>
+      <p class="pv-notice">${isNew?'아직 명단에 없는 이름입니다 — 버튼을 누르면 자동으로 추가됩니다<br>':''}선택을 바꾸려면 다시 누르면 됩니다<br>이 링크는 누구나 접속 가능하니 본인 이름만 체크해주세요</p>
       <button class="pv-share-btn" onclick="sharePublicLink()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
         카카오톡으로 링크 공유하기
