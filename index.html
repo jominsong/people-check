@@ -9,17 +9,15 @@
 <link rel="manifest" href="manifest.json">
 <title>UPSC 관리</title>
 <style>
-:root{--bg:#fff;--bg2:#f4f4f2;--bg3:#e9e9e7;--text:#111;--text2:#888;--bd:rgba(0,0,0,0.09);--bd2:rgba(0,0,0,0.16);--r:10px;--bh:62px;--acc:#5856D6;--s1:#5856D6;--s2:#007AFF;--s3:#FF9500;--s4:#34C759;--d1:#378ADD;--d2:#1D9E75;--d3:#D4537E;--d4:#BA7517;}
+:root{--bg:#fff;--bg2:#f4f4f2;--bg3:#e9e9e7;--text:#111;--text2:#888;--bd:rgba(0,0,0,0.09);--bd2:rgba(0,0,0,0.16);--r:10px;--bh:62px;--acc:#111;--s1:#5856D6;--s2:#007AFF;--s3:#FF9500;--s4:#34C759;--d1:#378ADD;--d2:#1D9E75;--d3:#D4537E;--d4:#BA7517;}
 @media(prefers-color-scheme:dark){:root{--bg:#1c1c1e;--bg2:#2c2c2e;--bg3:#3a3a3c;--text:#f2f2f7;--text2:#8e8e93;--bd:rgba(255,255,255,0.08);--bd2:rgba(255,255,255,0.16);}}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;}
 
-/* 로딩 */
 #scLoad{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:999;}
-.spin{width:34px;height:34px;border:3px solid var(--bd2);border-top-color:var(--acc);border-radius:50%;animation:sp .8s linear infinite;}
+.spin{width:34px;height:34px;border:3px solid var(--bd2);border-top-color:#5856D6;border-radius:50%;animation:sp .8s linear infinite;}
 @keyframes sp{to{transform:rotate(360deg);}}
 
-/* 공통 화면 */
 .screen{display:none;}
 .screen.on{display:flex;flex-direction:column;}
 
@@ -35,26 +33,28 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'Apple SD 
 .btn-pri:active{opacity:.75;}
 .err{font-size:12px;color:#E24B4A;text-align:center;}
 
-/* 모드 선택 */
+/* 모드 선택 (관리자 메뉴) */
 #scMode{min-height:100vh;align-items:center;justify-content:center;padding:32px;}
 .mode-title{font-size:22px;font-weight:700;margin-bottom:6px;text-align:center;}
-.mode-sub{font-size:14px;color:var(--text2);text-align:center;line-height:1.6;margin-bottom:28px;}
-.mode-cards{width:100%;max-width:360px;display:flex;flex-direction:column;gap:12px;}
-.mode-card{padding:22px 20px;border-radius:16px;border:1.5px solid var(--bd2);background:var(--bg2);cursor:pointer;display:flex;align-items:center;gap:16px;}
+.mode-sub{font-size:14px;color:var(--text2);text-align:center;line-height:1.6;margin-bottom:24px;}
+.mode-cards{width:100%;max-width:360px;display:flex;flex-direction:column;gap:10px;}
+.mode-group-lbl{font-size:11px;font-weight:600;color:var(--text2);letter-spacing:.04em;margin:6px 0 -2px;}
+.mode-card{padding:18px 18px;border-radius:14px;border:1.5px solid var(--bd2);background:var(--bg2);cursor:pointer;display:flex;align-items:center;gap:14px;}
 .mode-card:active{opacity:.75;}
 .mode-card.shoot{border-color:var(--s1);}
 .mode-card.dinner{border-color:var(--d1);}
-.mode-ico{font-size:36px;flex-shrink:0;}
-.mode-name{font-size:17px;font-weight:700;margin-bottom:3px;}
+.mode-ico{font-size:30px;flex-shrink:0;}
+.mode-name{font-size:16px;font-weight:700;margin-bottom:2px;}
 .mode-card.shoot .mode-name{color:var(--s1);}
 .mode-card.dinner .mode-name{color:var(--d1);}
-.mode-desc{font-size:12px;color:var(--text2);}
-.conn-badge{display:flex;align-items:center;gap:5px;margin-top:20px;}
+.mode-desc{font-size:11px;color:var(--text2);}
+.conn-badge{display:flex;align-items:center;gap:5px;margin-top:18px;}
 .cdot{width:7px;height:7px;border-radius:50%;background:#ccc;transition:background .3s;}
 .cdot.on{background:#4CAF50;}
 .clbl{font-size:11px;color:var(--text2);}
+.logout-link{font-size:11px;color:var(--text2);text-decoration:underline;margin-top:14px;border:none;background:none;cursor:pointer;}
 
-/* 관리자 메인 */
+/* 관리자 정산 화면 */
 #scAdmin{padding-bottom:calc(var(--bh)+8px);}
 #aTop{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--bg);border-bottom:1px solid var(--bd);}
 .aTop-inner{padding:12px 16px 10px;display:flex;align-items:center;gap:12px;}
@@ -63,9 +63,11 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'Apple SD 
 .aTop-info{flex:1;}
 .aTop-title{font-size:16px;font-weight:700;}
 .aTop-sub{font-size:10px;color:var(--text2);margin-top:1px;}
+.aTop-search{padding:0 16px 10px;}
+.aTop-search input{width:100%;padding:9px 13px;border:1px solid var(--bd2);border-radius:10px;font-size:16px;background:var(--bg2);color:var(--text);outline:none;}
+.aTop-search input:focus{border-color:var(--acc);}
 
-/* 현황 메인 (항상 표시) */
-#statusMain{padding:8px 14px 4px;}
+/* 현황 리스트 (공통) */
 .stcard{border:1px solid var(--bd);border-radius:var(--r);background:var(--bg);margin-bottom:5px;overflow:hidden;}
 .stch{display:flex;align-items:center;padding:14px 12px;cursor:pointer;gap:8px;}
 .stch:active{background:var(--bg2);}
@@ -85,14 +87,20 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'Apple SD 
 .strb.od1{background:var(--d2);border-color:var(--d2);color:#fff;}
 .strb.od2{background:var(--d3);border-color:var(--d3);color:#fff;}
 .strb.od3{background:var(--d4);border-color:var(--d4);color:#fff;}
+#statusMain{padding:8px 14px 4px;}
 
-/* 하단 탭바 (4버튼) */
+/* 현황 전용 화면 (필터링) */
+#scStatus{padding-bottom:16px;}
+#stTop{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--bg);border-bottom:1px solid var(--bd);}
+#statusOnlyList{padding:8px 14px 24px;}
+
+/* 하단 탭바 */
 #aBar{position:fixed;bottom:0;left:0;right:0;z-index:40;background:var(--bg);border-top:1px solid var(--bd);display:flex;height:var(--bh);padding-bottom:env(safe-area-inset-bottom,0px);}
 .atb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:none;background:none;color:var(--text2);font-size:10px;font-weight:500;cursor:pointer;padding:6px 0;}
 .atb:active{background:var(--bg2);}
 .atb svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
 
-/* 오버레이 & 시트 */
+/* 오버레이/시트 공통 */
 .ov{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;display:flex;align-items:flex-end;justify-content:center;}
 .sh{background:var(--bg);border-radius:20px 20px 0 0;padding:16px 16px calc(28px + env(safe-area-inset-bottom,0px));width:100%;max-height:88vh;overflow-y:auto;}
 .handle{width:36px;height:4px;border-radius:2px;background:var(--bd2);margin:0 auto 14px;}
@@ -123,16 +131,9 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'Apple SD 
 .mi-del{width:26px;height:26px;border-radius:50%;border:none;background:var(--bg3);color:var(--text2);font-size:15px;cursor:pointer;}
 input[type=file]{display:none;}
 
-/* 링크 시트 */
-.all-copy-btn{width:100%;padding:13px;border-radius:var(--r);border:1px solid var(--bd2);background:var(--bg2);color:var(--text);font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:8px;}
-.link-hint{font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.6;}
-.lcard{border:1px solid var(--bd);border-radius:var(--r);padding:11px 12px;margin-bottom:5px;display:flex;align-items:center;gap:8px;}
-.lcard-info{flex:1;min-width:0;}
-.lnm{font-size:14px;font-weight:500;}
-.lurl{font-size:10px;color:var(--text2);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.l-btns{display:flex;gap:5px;flex-shrink:0;}
-.lcopy{padding:7px 10px;border-radius:8px;border:1px solid var(--bd2);background:var(--bg2);font-size:11px;font-weight:500;cursor:pointer;}
-.lshare{padding:7px 10px;border-radius:8px;border:none;background:var(--text);color:var(--bg);font-size:11px;font-weight:500;cursor:pointer;}
+/* 링크 시트 (공용 링크) */
+.link-hint{font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.7;}
+.pub-link-box{background:var(--bg2);border:1px solid var(--bd2);border-radius:var(--r);padding:14px;font-size:13px;word-break:break-all;margin-bottom:12px;font-family:monospace;color:var(--text);}
 
 /* 관리 시트 */
 .mgmt-btn{width:100%;padding:15px;border-radius:var(--r);border:1px solid var(--bd2);background:var(--bg);color:var(--text);font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:12px;margin-bottom:8px;text-align:left;}
@@ -143,7 +144,6 @@ input[type=file]{display:none;}
 
 /* 정산 시트 */
 .settle-card{background:var(--bg2);border-radius:var(--r);padding:14px;}
-.settle-title{font-size:14px;font-weight:600;margin-bottom:12px;}
 .num-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px;}
 .num-box{background:var(--bg);border-radius:8px;padding:12px;text-align:center;}
 .num-val{font-size:24px;font-weight:700;line-height:1;}
@@ -156,13 +156,10 @@ input[type=file]{display:none;}
 
 /* 참여자 화면 */
 #scPart{min-height:100vh;}
-.pv-top{background:var(--bg);border-bottom:1px solid var(--bd);padding:18px 16px 0;position:sticky;top:0;z-index:10;}
-.pv-greeting{font-size:20px;font-weight:700;margin-bottom:4px;}
-.pv-sub{font-size:13px;color:var(--text2);margin-bottom:14px;}
-.pv-tabs{display:flex;gap:8px;}
-.pvtab{flex:1;padding:12px;border-radius:var(--r) var(--r) 0 0;border:1.5px solid var(--bd2);border-bottom:none;background:var(--bg2);color:var(--text2);font-size:14px;font-weight:600;cursor:pointer;text-align:center;}
-.pvtab.on{background:var(--bg);color:var(--text);border-bottom:2px solid var(--bg);}
-.pv-body{padding:16px 14px 40px;}
+.pv-top{background:var(--bg);border-bottom:1px solid var(--bd);padding:18px 16px;position:sticky;top:0;z-index:10;}
+.pv-greeting{font-size:19px;font-weight:700;margin-bottom:3px;}
+.pv-sub{font-size:13px;color:var(--text2);}
+.pv-body{padding:20px 16px 40px;}
 .pv-sec-title{font-size:12px;font-weight:600;color:var(--text2);letter-spacing:.04em;margin-bottom:12px;}
 .pv-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
 .pv-btn{padding:24px 8px;border-radius:var(--r);border:2px solid var(--bd2);background:var(--bg2);font-size:13px;font-weight:600;cursor:pointer;text-align:center;line-height:1.4;}
@@ -181,8 +178,13 @@ input[type=file]{display:none;}
 .pv-done.show{display:block;}
 .pv-notice{font-size:11px;color:var(--text2);text-align:center;line-height:1.7;}
 .pv-share-btn{width:100%;padding:13px;border-radius:var(--r);border:none;margin-top:14px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;background:#FEE500;color:#000;}
+.pv-name-input{width:100%;padding:13px 14px;border:1px solid var(--bd2);border-radius:10px;font-size:16px;background:var(--bg2);color:var(--text);outline:none;margin-bottom:10px;}
+.pv-name-input:focus{border-color:var(--acc);}
+.pv-cand-btn{width:100%;text-align:left;padding:13px 14px;border-radius:10px;border:1px solid var(--bd2);background:var(--bg2);font-size:14px;cursor:pointer;margin-bottom:6px;}
+.pv-cand-btn:active{background:var(--bg3);}
 .not-found{text-align:center;padding:5rem 2rem;}
 .nf-ico{font-size:48px;margin-bottom:14px;}
+
 .empty-state{text-align:center;padding:3rem 1rem;color:var(--text2);font-size:14px;line-height:1.8;}
 .toast{position:fixed;bottom:calc(var(--bh)+10px);left:50%;transform:translateX(-50%);background:rgba(20,20,20,.92);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:500;white-space:nowrap;}
 .toast.on{opacity:1;}
@@ -198,7 +200,7 @@ input[type=file]{display:none;}
 <div class="screen" id="scLogin">
   <div class="login-ico">🎯</div>
   <div class="login-title">UPSC 관리 시스템</div>
-  <div class="login-sub">관리자로 로그인하거나<br>참여자 링크로 접속하세요</div>
+  <div class="login-sub">관리자 비밀번호를 입력해주세요</div>
   <div class="login-box">
     <input type="password" id="pwInput" placeholder="관리자 비밀번호">
     <button class="btn-pri" onclick="doLogin()">로그인</button>
@@ -206,24 +208,35 @@ input[type=file]{display:none;}
   </div>
 </div>
 
-<!-- 모드 선택 -->
+<!-- 관리자 메뉴 (모드 선택) -->
 <div class="screen" id="scMode">
-  <div class="mode-title">무엇을 정산할까요?</div>
+  <div class="mode-title">관리 메뉴</div>
   <div class="mode-sub">관리할 항목을 선택해주세요</div>
   <div class="mode-cards">
-    <div class="mode-card shoot" onclick="enterMode('shoot')">
-      <div class="mode-ico">🎯</div>
-      <div><div class="mode-name">사격 정산</div><div class="mode-desc">9mm 10발 · 9mm 20발 · .45구경 · 소총</div></div>
+    <div class="mode-group-lbl">🎯 사격</div>
+    <div class="mode-card shoot" onclick="enterSettle('shoot')">
+      <div class="mode-ico">🧾</div>
+      <div><div class="mode-name">사격 정산</div><div class="mode-desc">전체 명단 · 직접 수정 · CSV 정산</div></div>
     </div>
-    <div class="mode-card dinner" onclick="enterMode('dinner')">
-      <div class="mode-ico">🍻</div>
-      <div><div class="mode-name">회식 정산</div><div class="mode-desc">1차 · 2차 · 3차 · 4차</div></div>
+    <div class="mode-card shoot" onclick="enterStatus('shoot')">
+      <div class="mode-ico">📋</div>
+      <div><div class="mode-name">사격 현황</div><div class="mode-desc">체크한 사람만 보기</div></div>
+    </div>
+    <div class="mode-group-lbl">🍻 회식</div>
+    <div class="mode-card dinner" onclick="enterSettle('dinner')">
+      <div class="mode-ico">🧾</div>
+      <div><div class="mode-name">회식 정산</div><div class="mode-desc">전체 명단 · 직접 수정 · CSV 정산</div></div>
+    </div>
+    <div class="mode-card dinner" onclick="enterStatus('dinner')">
+      <div class="mode-ico">📋</div>
+      <div><div class="mode-name">회식 현황</div><div class="mode-desc">체크한 사람만 보기</div></div>
     </div>
   </div>
   <div class="conn-badge"><div class="cdot" id="cdot"></div><span class="clbl" id="clbl">연결 중</span></div>
+  <button class="logout-link" onclick="doLogout()">로그아웃</button>
 </div>
 
-<!-- 관리자 메인 -->
+<!-- 관리자: 정산 화면 -->
 <div class="screen" id="scAdmin">
   <div id="aTop">
     <div class="aTop-inner">
@@ -233,12 +246,11 @@ input[type=file]{display:none;}
         <div class="aTop-sub" id="aTopSub">로딩 중...</div>
       </div>
     </div>
+    <div class="aTop-search">
+      <input type="text" id="settleSearch" placeholder="이름 또는 기수 검색...">
+    </div>
   </div>
-
-  <!-- 현황 (항상 표시) -->
   <div id="statusMain"></div>
-
-  <!-- 하단 탭바: 추가 | 링크 | 관리 | 정산 -->
   <div id="aBar">
     <button class="atb" onclick="openSheet('add')">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>추가
@@ -255,22 +267,24 @@ input[type=file]{display:none;}
   </div>
 </div>
 
-<!-- 참여자 화면 -->
-<div class="screen" id="scPart">
-  <div class="pv-top">
-    <div class="pv-greeting" id="pvGreeting">안녕하세요!</div>
-    <div class="pv-sub">참여한 항목을 눌러 체크해주세요</div>
-    <div class="pv-tabs">
-      <button class="pvtab on" id="pvt0" onclick="setPvTab(0)">🎯 사격</button>
-      <button class="pvtab"    id="pvt1" onclick="setPvTab(1)">🍻 회식</button>
+<!-- 관리자: 현황 전용 화면 -->
+<div class="screen" id="scStatus">
+  <div id="stTop">
+    <div class="aTop-inner">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <div class="aTop-info">
+        <div class="aTop-title" id="stTopTitle">현황</div>
+        <div class="aTop-sub" id="stTopSub">로딩 중...</div>
+      </div>
     </div>
   </div>
-  <div class="pv-body" id="pvBody"></div>
-  <div class="not-found" id="pvNotFound" style="display:none">
-    <div class="nf-ico">😕</div>
-    <p style="font-size:16px;font-weight:600;margin-bottom:8px;">등록되지 않은 이름입니다</p>
-    <p style="font-size:13px;color:var(--text2);">관리자에게 문의해주세요</p>
-  </div>
+  <div id="statusOnlyList"></div>
+</div>
+
+<!-- 참여자 화면 -->
+<div class="screen" id="scPart">
+  <div id="pvHeaderWrap"></div>
+  <div id="pvBodyWrap"></div>
   <div class="pv-toast" id="pvToast"></div>
 </div>
 
@@ -297,17 +311,17 @@ input[type=file]{display:none;}
   </div>
 </div>
 
-<!-- 링크 시트 -->
+<!-- 링크 시트 (공용 링크) -->
 <div class="ov" id="ovLinks" style="display:none" onclick="closeSheet('links')">
   <div class="sh" onclick="event.stopPropagation()">
     <div class="handle"></div>
-    <div class="sh-hd"><span class="sh-tt">참여자 링크</span><button class="sh-cl" onclick="closeSheet('links')">×</button></div>
-    <button class="all-copy-btn" onclick="copyAllLinks()">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-      전체 링크 복사 (단톡 전송용)
-    </button>
-    <p class="link-hint">각 링크는 해당 이름의 멤버만 체크할 수 있습니다</p>
-    <div id="linkList"></div>
+    <div class="sh-hd"><span class="sh-tt">참여자 공용 링크</span><button class="sh-cl" onclick="closeSheet('links')">×</button></div>
+    <p class="link-hint">아래 링크 하나만 단톡방에 공유하면 됩니다.<br>참여자는 접속 후 사격/회식을 선택하고 본인 이름을 입력해서 체크합니다.</p>
+    <div class="pub-link-box" id="publicLinkBox"></div>
+    <div class="ar">
+      <button class="ab" onclick="copyPublicLink()">링크 복사</button>
+      <button class="ab" onclick="sharePublicLinkAdmin()">공유하기</button>
+    </div>
   </div>
 </div>
 
@@ -381,8 +395,19 @@ const SNCLS=["ns0","ns1","ns2","ns3"];
 const DNCLS=["nd0","nd1","nd2","nd3"];
 
 let members=[],shooting={},dinner={},adminPass="upsc1234";
-let nid=1,pvTab=0,mode=null,stExp=null;
-const urlName=new URLSearchParams(location.search).get('n');
+let nid=1;
+let mode=null;       /* 'shoot' | 'dinner' : 관리자가 보는 항목 종류 */
+let viewType=null;   /* 'settle' | 'status' : 관리자 화면 종류 */
+let stExp=null;
+
+/* 참여자 상태 */
+let isParticipant=false;
+let pvStep='category'; /* 'category' | 'name' | 'check' */
+let pvCategory=null;    /* 'shoot' | 'dinner' */
+let pvMember=null;
+
+const params=new URLSearchParams(location.search);
+const isPublicLink=params.get('p')==='1';
 
 /* ── Firebase ── */
 function listen(){
@@ -404,83 +429,137 @@ function setConn(ok){
   if(d)d.className='cdot'+(ok?' on':'');
   if(l)l.textContent=ok?'실시간 연결':'연결 끊김';
 }
-function show(id){['scLogin','scMode','scAdmin','scPart'].forEach(s=>document.getElementById(s).classList.remove('on'));document.getElementById(id).classList.add('on');}
-function refresh(){updateSub();if(mode){renderStatus();renderMl();renderLinks();renderSettle();}if(urlName)renderPv();}
+function show(id){['scLogin','scMode','scAdmin','scStatus','scPart'].forEach(s=>document.getElementById(s).classList.remove('on'));document.getElementById(id).classList.add('on');}
 
-/* ── 로그인 ── */
+function refresh(){
+  updateSub();
+  if(mode&&viewType==='settle'){renderStatus();renderMl();renderLinks();renderSettle();}
+  if(mode&&viewType==='status'){renderStatusOnly();}
+  if(isParticipant)renderParticipant();
+}
+
+function sorted(list){return[...list].sort((a,b)=>{const an=parseInt(a.k)||0,bn=parseInt(b.k)||0;return an!==bn?an-bn:a.name.localeCompare(b.name,'ko');});}
+function getBase(){return location.origin+location.pathname;}
+
+/* ── 로그인/아웃 ── */
 window.doLogin=function(){
   const pw=document.getElementById('pwInput').value;
   if(pw===adminPass){
-    localStorage.setItem('upsc_auth', pw);
+    localStorage.setItem('upsc_auth',pw);
     document.getElementById('pwInput').value='';
     document.getElementById('pwErr').textContent='';
     show('scMode');
-  } else {
+  }else{
     document.getElementById('pwErr').textContent='비밀번호가 틀렸습니다';
   }
 };
+window.doLogout=function(){
+  localStorage.removeItem('upsc_auth');
+  show('scLogin');
+};
 
-/* ── 모드 선택 ── */
-window.enterMode=function(m){
-  mode=m;stExp=null;
+/* ── 모드 진입/뒤로가기 ── */
+window.enterSettle=function(m){
+  mode=m;viewType='settle';stExp=null;
   const isShoot=m==='shoot';
   document.getElementById('aTopTitle').textContent=isShoot?'🎯 사격 정산':'🍻 회식 정산';
   document.getElementById('mgmtResetLabel').textContent=isShoot?'사격 기록 관리':'회식 기록 관리';
   document.getElementById('mgmtResetTxt').textContent=isShoot?'사격 기록 초기화':'회식 기록 초기화';
   document.getElementById('settleTitleTxt').textContent=isShoot?'🎯 사격 정산':'🍻 회식 정산';
-  document.documentElement.style.setProperty('--acc',isShoot?'var(--s1)':'var(--d1)');
+  document.documentElement.style.setProperty('--acc',isShoot?'#5856D6':'#378ADD');
+  const si=document.getElementById('settleSearch');if(si)si.value='';
   show('scAdmin');
-  setPad();refresh();
+  setPad('aTop','statusMain');
+  refresh();
 };
-window.goBack=function(){mode=null;stExp=null;show('scMode');};
+window.enterStatus=function(m){
+  mode=m;viewType='status';stExp=null;
+  const isShoot=m==='shoot';
+  document.getElementById('stTopTitle').textContent=isShoot?'🎯 사격 현황':'🍻 회식 현황';
+  document.documentElement.style.setProperty('--acc',isShoot?'#5856D6':'#378ADD');
+  show('scStatus');
+  setPad('stTop','statusOnlyList');
+  refresh();
+};
+window.goBack=function(){mode=null;viewType=null;stExp=null;show('scMode');};
 
-function setPad(){setTimeout(()=>{const h=document.getElementById('aTop').offsetHeight;document.getElementById('statusMain').style.paddingTop=h+'px';},100);}
-window.addEventListener('resize',setPad);
+function setPad(topId,targetId){
+  setTimeout(()=>{
+    const top=document.getElementById(topId),target=document.getElementById(targetId);
+    if(top&&target)target.style.paddingTop=top.offsetHeight+'px';
+  },100);
+}
+window.addEventListener('resize',()=>{
+  if(viewType==='settle')setPad('aTop','statusMain');
+  if(viewType==='status')setPad('stTop','statusOnlyList');
+});
 
 function updateSub(){
-  const el=document.getElementById('aTopSub');if(!el)return;
-  const sc=members.filter(m=>shooting[m.id]?.size>0).length;
-  const dc=members.filter(m=>dinner[m.id]?.size>0).length;
-  el.textContent=`총 ${members.length}명 · 사격 ${sc}명 · 회식 ${dc}명`;
+  const a=document.getElementById('aTopSub');
+  if(a){
+    const sc=members.filter(m=>shooting[m.id]?.size>0).length;
+    const dc=members.filter(m=>dinner[m.id]?.size>0).length;
+    a.textContent=`총 ${members.length}명 · 사격 ${sc}명 · 회식 ${dc}명`;
+  }
+  const b=document.getElementById('stTopSub');
+  if(b&&mode){
+    const isShoot=mode==='shoot';
+    const cnt=members.filter(m=>(isShoot?shooting:dinner)[m.id]?.size>0).length;
+    b.textContent=`체크 완료 ${cnt}명 / 총 ${members.length}명`;
+  }
 }
-function sorted(list){return[...list].sort((a,b)=>{const an=parseInt(a.k)||0,bn=parseInt(b.k)||0;return an!==bn?an-bn:a.name.localeCompare(b.name,'ko');});}
 
-/* ── 현황 렌더 (메인 화면) ── */
+/* ── 현황 렌더: 정산화면(전체+검색) ── */
 function renderStatus(){
   const el=document.getElementById('statusMain');if(!el||!mode)return;
   const isShoot=mode==='shoot';
   const opts=isShoot?SOPTS:DOPTS,data=isShoot?shooting:dinner;
   const onCls=isShoot?['on0','on1','on2','on3']:['od0','od1','od2','od3'];
   const bgCls=isShoot?['bs0','bs1','bs2','bs3']:['bd0','bd1','bd2','bd3'];
-  const list=sorted([...members]);
-  if(!list.length){el.innerHTML="<div class='empty-state'>명단이 없습니다<br>아래 <b>추가</b> 버튼으로 멤버를 추가하세요</div>";return;}
+  const q=(document.getElementById('settleSearch')?.value||'').trim();
+  let list=sorted([...members]);
+  if(q)list=list.filter(m=>m.name.includes(q)||m.k.includes(q));
+  if(!members.length){el.innerHTML="<div class='empty-state'>명단이 없습니다<br>아래 <b>추가</b> 버튼으로 멤버를 추가하세요</div>";return;}
+  if(!list.length){el.innerHTML="<div class='empty-state'>검색 결과가 없습니다</div>";return;}
   el.innerHTML=list.map(m=>{
     const sel=data[m.id]||new Set();
     const badges=opts.map((o,i)=>sel.has(o)?`<span class='badge ${bgCls[i]}'>${o}</span>`:'').join('');
-    const rp=stExp===m.id
-      ?`<div class='strp'>${opts.map((o,i)=>`<button class='strb ${sel.has(o)?onCls[i]:""}' onclick='event.stopPropagation();toggleSt(${m.id},${i})'>${o}</button>`).join('')}</div>`
-      :'';
+    const rp=stExp===m.id?`<div class='strp'>${opts.map((o,i)=>`<button class='strb ${sel.has(o)?onCls[i]:''}' onclick='event.stopPropagation();toggleSt(${m.id},${i})'>${o}</button>`).join('')}</div>`:'';
     return`<div class='stcard'><div class='stch' onclick='toggleExp(${m.id})'><span class='stnm'>${m.name}</span>${m.k?`<span class='stks'>${m.k}</span>`:''}<div class='badges'>${badges}</div></div>${rp}</div>`;
   }).join('');
 }
-window.toggleExp=function(id){stExp=stExp===id?null:id;renderStatus();};
+
+/* ── 현황 렌더: 현황화면(체크한 사람만) ── */
+function renderStatusOnly(){
+  const el=document.getElementById('statusOnlyList');if(!el||!mode)return;
+  const isShoot=mode==='shoot';
+  const opts=isShoot?SOPTS:DOPTS,data=isShoot?shooting:dinner;
+  const onCls=isShoot?['on0','on1','on2','on3']:['od0','od1','od2','od3'];
+  const bgCls=isShoot?['bs0','bs1','bs2','bs3']:['bd0','bd1','bd2','bd3'];
+  const list=sorted([...members]).filter(m=>data[m.id]?.size>0);
+  if(!list.length){el.innerHTML="<div class='empty-state'>아직 체크한 사람이 없습니다</div>";return;}
+  el.innerHTML=list.map(m=>{
+    const sel=data[m.id]||new Set();
+    const badges=opts.map((o,i)=>sel.has(o)?`<span class='badge ${bgCls[i]}'>${o}</span>`:'').join('');
+    const rp=stExp===m.id?`<div class='strp'>${opts.map((o,i)=>`<button class='strb ${sel.has(o)?onCls[i]:''}' onclick='event.stopPropagation();toggleSt(${m.id},${i})'>${o}</button>`).join('')}</div>`:'';
+    return`<div class='stcard'><div class='stch' onclick='toggleExp(${m.id})'><span class='stnm'>${m.name}</span>${m.k?`<span class='stks'>${m.k}</span>`:''}<div class='badges'>${badges}</div></div>${rp}</div>`;
+  }).join('');
+}
+
+window.toggleExp=function(id){
+  stExp=stExp===id?null:id;
+  if(viewType==='settle')renderStatus();else renderStatusOnly();
+};
 window.toggleSt=async function(id,ri){
   const isShoot=mode==='shoot',opts=isShoot?SOPTS:DOPTS,data=isShoot?shooting:dinner;
   if(!data[id])data[id]=new Set();
   data[id].has(opts[ri])?data[id].delete(opts[ri]):data[id].add(opts[ri]);
-  renderStatus();
+  if(viewType==='settle')renderStatus();else renderStatusOnly();
   if(isShoot)await saveS();else await saveD();
 };
 
-/* ── 시트 열기/닫기 ── */
-const SHEETS={add:'ovAdd',links:'ovLinks',mgmt:'ovMgmt',settle:'ovSettle'};
-window.openSheet=function(name){
-  if(name==='settle')renderSettle();
-  if(name==='links')renderLinks();
-  if(name==='add'){renderMl();setTimeout(()=>document.getElementById('addName').focus(),300);}
-  document.getElementById(SHEETS[name]).style.display='flex';
-};
-window.closeSheet=function(name){document.getElementById(SHEETS[name]).style.display='none';};
+/* ── 검색 ── */
+document.addEventListener('input',e=>{if(e.target&&e.target.id==='settleSearch')renderStatus();});
 
 /* ── 추가 ── */
 window.doAdd=async function(){
@@ -542,27 +621,30 @@ window.handleCSV=async function(inp){
   rd.readAsText(f,'utf-8');inp.value='';
 };
 
-/* ── 링크 ── */
-function getBase(){return location.origin+location.pathname;}
-function memberLink(name){return`${getBase()}?n=${encodeURIComponent(name)}`;}
-window.copyOneLink=function(enc){navigator.clipboard?.writeText(`${getBase()}?n=${enc}`).then(()=>showToast('링크 복사됐습니다'));};
-window.shareOneLink=function(name,enc){
-  const url=`${getBase()}?n=${enc}`;
-  if(navigator.share)navigator.share({title:`${name}님 UPSC 체크`,text:`${name}님, 링크에서 사격/회식 참여를 체크해주세요!`,url}).catch(()=>{});
+/* ── 링크(공용) ── */
+function renderLinks(){
+  const url=getBase()+'?p=1';
+  const el=document.getElementById('publicLinkBox');
+  if(el)el.textContent=url;
+}
+window.copyPublicLink=function(){
+  navigator.clipboard?.writeText(getBase()+'?p=1').then(()=>showToast('링크 복사됐습니다')).catch(()=>showToast('복사 실패'));
+};
+window.sharePublicLinkAdmin=function(){
+  const url=getBase()+'?p=1';
+  if(navigator.share)navigator.share({title:'UPSC 참여 체크',text:'사격/회식 참여 체크 링크입니다. 접속해서 본인 이름으로 체크해주세요!',url}).catch(()=>{});
   else navigator.clipboard?.writeText(url).then(()=>showToast('링크 복사됐습니다'));
 };
-window.copyAllLinks=function(){
-  if(!members.length){showToast('명단이 없습니다');return;}
-  const txt=sorted([...members]).map(m=>`${m.name}: ${memberLink(m.name)}`).join('\n');
-  navigator.clipboard?.writeText(txt).then(()=>showToast('전체 링크 복사됐습니다'));
+
+/* ── 시트 ── */
+const SHEETS={add:'ovAdd',links:'ovLinks',mgmt:'ovMgmt',settle:'ovSettle'};
+window.openSheet=function(name){
+  if(name==='settle')renderSettle();
+  if(name==='links')renderLinks();
+  if(name==='add'){renderMl();setTimeout(()=>document.getElementById('addName').focus(),300);}
+  document.getElementById(SHEETS[name]).style.display='flex';
 };
-function renderLinks(){
-  if(!members.length){document.getElementById('linkList').innerHTML="<div class='empty-state'>명단이 없습니다</div>";return;}
-  document.getElementById('linkList').innerHTML=sorted([...members]).map(m=>{
-    const enc=encodeURIComponent(m.name);
-    return`<div class='lcard'><div class='lcard-info'><div class='lnm'>${m.name}${m.k?` <span style='font-size:10px;color:var(--text2)'>${m.k}</span>`:''}</div><div class='lurl'>${memberLink(m.name)}</div></div><div class='l-btns'><button class='lcopy' onclick='copyOneLink("${enc}")'>복사</button><button class='lshare' onclick='shareOneLink("${m.name}","${enc}")'>공유</button></div></div>`;
-  }).join('');
-}
+window.closeSheet=function(name){document.getElementById(SHEETS[name]).style.display='none';};
 
 /* ── 관리 ── */
 window.confirmAction=function(action){
@@ -585,7 +667,7 @@ window.confirmAction=function(action){
 };
 window.closeConfirm=function(){document.getElementById('ovConfirm').style.display='none';};
 
-/* ── 정산 ── */
+/* ── 정산(CSV) ── */
 function buildCsv(){
   const isShoot=mode==='shoot',opts=isShoot?SOPTS:DOPTS,data=isShoot?shooting:dinner;
   const rows=[['이름','기수',...opts].join(',')];
@@ -605,63 +687,129 @@ window.shareCsv=function(){
   else navigator.clipboard?.writeText(txt).then(()=>showToast('복사됐습니다'));
 };
 
-/* ── 참여자 ── */
-window.setPvTab=function(n){pvTab=n;document.getElementById('pvt0').className='pvtab'+(n===0?' on':'');document.getElementById('pvt1').className='pvtab'+(n===1?' on':'');renderPv();};
+/* ══════════ 참여자 화면 ══════════ */
+window.selectPvCategory=function(cat){pvCategory=cat;pvStep='name';renderParticipant();};
+window.pvBack=function(){
+  if(pvStep==='check'){pvStep='name';pvMember=null;}
+  else if(pvStep==='name'){pvStep='category';pvCategory=null;}
+  renderParticipant();
+};
+window.submitPvName=function(){
+  const name=(document.getElementById('pvNameInput')?.value||'').trim();
+  const errEl=document.getElementById('pvNameErr');
+  const candEl=document.getElementById('pvCandidateList');
+  if(!name){if(errEl)errEl.textContent='이름을 입력해주세요';return;}
+  const matches=members.filter(m=>m.name===name);
+  if(!matches.length){
+    if(errEl)errEl.textContent='등록되지 않은 이름입니다. 다시 확인해주세요';
+    if(candEl)candEl.innerHTML='';
+    return;
+  }
+  if(matches.length===1){pvMember=matches[0];pvStep='check';renderParticipant();return;}
+  if(errEl)errEl.textContent='동명이인이 있습니다. 본인을 선택해주세요';
+  if(candEl)candEl.innerHTML=matches.map(m=>`<button class='pv-cand-btn' onclick='choosePvCandidate(${m.id})'>${m.name} <span style="color:var(--text2);font-size:12px;">${m.k}</span></button>`).join('');
+};
+window.choosePvCandidate=function(id){
+  pvMember=members.find(m=>m.id===id);
+  if(pvMember){pvStep='check';renderParticipant();}
+};
 window.pvToggle=async function(id,ri){
-  const opts=pvTab===0?SOPTS:DOPTS,data=pvTab===0?shooting:dinner;
+  const opts=pvCategory==='shoot'?SOPTS:DOPTS,data=pvCategory==='shoot'?shooting:dinner;
   if(!data[id])data[id]=new Set();
-  const o=opts[ri];data[id].has(o)?data[id].delete(o):data[id].add(o);
-  renderPv();
-  if(pvTab===0)await saveS();else await saveD();
+  const o=opts[ri];
+  data[id].has(o)?data[id].delete(o):data[id].add(o);
+  renderParticipant();
+  if(pvCategory==='shoot')await saveS();else await saveD();
   pvShowToast(data[id].has(o)?o+' 체크됐습니다':o+' 해제됐습니다');
 };
-window.shareSelf=function(name){
-  const url=memberLink(name);
-  if(navigator.share)navigator.share({title:`${name}님 UPSC 체크`,text:`${name}님의 사격/회식 참여 링크입니다`,url}).catch(()=>{});
+window.sharePublicLink=function(){
+  const url=getBase()+'?p=1';
+  if(navigator.share)navigator.share({title:'UPSC 참여 체크',text:'사격/회식 참여 체크 링크입니다! 본인 이름으로 체크해주세요.',url}).catch(()=>{});
   else navigator.clipboard?.writeText(url).then(()=>pvShowToast('링크 복사됐습니다'));
 };
-function renderPv(){
-  if(!urlName)return;
-  const m=members.find(x=>x.name===urlName);
-  if(members.length>0&&!m){document.getElementById('pvNotFound').style.display='block';document.getElementById('pvBody').style.display='none';return;}
-  if(!m)return;
-  document.getElementById('pvGreeting').textContent=`${m.name}님 안녕하세요!`;
-  document.getElementById('pvNotFound').style.display='none';
-  document.getElementById('pvBody').style.display='block';
-  const opts=pvTab===0?SOPTS:DOPTS,data=pvTab===0?shooting:dinner;
-  const onCls=pvTab===0?['ps0','ps1','ps2','ps3']:['pd0','pd1','pd2','pd3'];
-  const sel=data[m.id]||new Set();
-  const checked=[...sel];
-  document.getElementById('pvBody').innerHTML=
-    `<div class='pv-sec-title'>${pvTab===0?'🎯 사격 참여 체크':'🍻 회식 참여 체크'}</div>`+
-    `<div class='pv-grid'>${opts.map((o,i)=>`<button class='pv-btn ${sel.has(o)?onCls[i]:""}' onclick='pvToggle(${m.id},${i})'>${o}</button>`).join('')}</div>`+
-    `<div class='pv-done ${pvTab===0?'sd':'dd'} ${checked.length?'show':''}'>${checked.length?'✅ '+checked.join(' · ')+' 선택됨':''}</div>`+
-    `<p class='pv-notice'>선택을 바꾸려면 다시 누르면 됩니다<br>이 링크는 ${m.name}님만 사용할 수 있습니다</p>`+
-    `<button class='pv-share-btn' onclick='shareSelf("${m.name}")'>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-      카카오톡으로 링크 공유하기
-    </button>`;
+
+function renderParticipant(){
+  const head=document.getElementById('pvHeaderWrap');
+  const body=document.getElementById('pvBodyWrap');
+  if(!head||!body)return;
+
+  if(pvStep==='category'){
+    head.innerHTML=`<div class="pv-top"><div class="pv-greeting">UPSC 참여 체크</div><div class="pv-sub">참여할 항목을 선택해주세요</div></div>`;
+    body.innerHTML=`<div class="pv-body">
+      <div class="mode-cards">
+        <div class="mode-card shoot" onclick="selectPvCategory('shoot')">
+          <div class="mode-ico">🎯</div>
+          <div><div class="mode-name">사격 참여 체크</div><div class="mode-desc">9mm 10발 · 9mm 20발 · .45구경 · 소총</div></div>
+        </div>
+        <div class="mode-card dinner" onclick="selectPvCategory('dinner')">
+          <div class="mode-ico">🍻</div>
+          <div><div class="mode-name">회식 참여 체크</div><div class="mode-desc">1차 · 2차 · 3차 · 4차</div></div>
+        </div>
+      </div>
+    </div>`;
+    return;
+  }
+
+  if(pvStep==='name'){
+    const label=pvCategory==='shoot'?'🎯 사격 참여 체크':'🍻 회식 참여 체크';
+    head.innerHTML=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div class="pv-greeting" style="margin-bottom:0;">${label}</div></div></div>`;
+    body.innerHTML=`<div class="pv-body">
+      <div class="pv-sec-title">이름을 입력해주세요</div>
+      <input class="pv-name-input" id="pvNameInput" type="text" placeholder="이름" maxlength="6">
+      <button class="btn-pri" onclick="submitPvName()">확인</button>
+      <p class="err" id="pvNameErr" style="margin-top:10px;"></p>
+      <div id="pvCandidateList" style="margin-top:10px;"></div>
+    </div>`;
+    setTimeout(()=>document.getElementById('pvNameInput')?.focus(),200);
+    const inp=document.getElementById('pvNameInput');
+    if(inp)inp.addEventListener('keydown',e=>{if(e.key==='Enter')window.submitPvName();});
+    return;
+  }
+
+  if(pvStep==='check'){
+    const m=pvMember;if(!m)return;
+    const opts=pvCategory==='shoot'?SOPTS:DOPTS;
+    const data=pvCategory==='shoot'?shooting:dinner;
+    const onCls=pvCategory==='shoot'?['ps0','ps1','ps2','ps3']:['pd0','pd1','pd2','pd3'];
+    const sel=data[m.id]||new Set();
+    const checked=[...sel];
+    head.innerHTML=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div><div class="pv-greeting" style="margin-bottom:2px;">${m.name}님 안녕하세요!</div><div class="pv-sub" style="margin-bottom:0;">참여한 항목을 눌러 체크해주세요</div></div></div></div>`;
+    body.innerHTML=`<div class="pv-body">
+      <div class="pv-sec-title">${pvCategory==='shoot'?'🎯 사격 참여 체크':'🍻 회식 참여 체크'}</div>
+      <div class="pv-grid">${opts.map((o,i)=>`<button class="pv-btn ${sel.has(o)?onCls[i]:''}" onclick="pvToggle(${m.id},${i})">${o}</button>`).join('')}</div>
+      <div class="pv-done ${pvCategory==='shoot'?'sd':'dd'} ${checked.length?'show':''}">${checked.length?'✅ '+checked.join(' · ')+' 선택됨':''}</div>
+      <p class="pv-notice">선택을 바꾸려면 다시 누르면 됩니다<br>이 링크는 누구나 접속 가능하니 본인 이름만 체크해주세요</p>
+      <button class="pv-share-btn" onclick="sharePublicLink()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        카카오톡으로 링크 공유하기
+      </button>
+    </div>`;
+  }
 }
 
-/* ── 이벤트 ── */
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.className='toast on';setTimeout(()=>t.className='toast',2200);}
+function pvShowToast(msg){const t=document.getElementById('pvToast');t.textContent=msg;t.className='pv-toast on';setTimeout(()=>t.className='pv-toast',2000);}
+
 document.addEventListener('keydown',e=>{
   if(e.key!=='Enter')return;
   if(document.getElementById('scLogin').classList.contains('on'))window.doLogin();
   if(document.getElementById('ovAdd').style.display==='flex')window.doAdd();
 });
 
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.className='toast on';setTimeout(()=>t.className='toast',2200);}
-function pvShowToast(msg){const t=document.getElementById('pvToast');t.textContent=msg;t.className='pv-toast on';setTimeout(()=>t.className='pv-toast',2000);}
-
 listen();
 setTimeout(()=>{
   document.getElementById('scLoad').style.display='none';
-  if(urlName){show('scPart');return;}
-  /* 저장된 비밀번호로 자동 로그인 */
+  if(isPublicLink){
+    isParticipant=true;
+    pvStep='category';pvCategory=null;pvMember=null;
+    show('scPart');
+    renderParticipant();
+    return;
+  }
   const saved=localStorage.getItem('upsc_auth');
-  if(saved&&saved===adminPass){show('scMode');}
+  if(saved&&saved===adminPass)show('scMode');
   else show('scLogin');
-},1500);
+},1200);
 </script>
 </body>
 </html>
