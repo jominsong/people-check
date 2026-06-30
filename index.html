@@ -151,6 +151,12 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'Apple SD 
 .price-input{width:74px;padding:7px 8px;border:1px solid var(--bd2);border-radius:8px;font-size:13px;background:var(--bg);color:var(--text);text-align:right;outline:none;}
 .price-input:focus{border-color:var(--acc);}
 .price-unit{font-size:11px;color:var(--text2);}
+.cat-toggle-row{display:flex;gap:7px;margin-bottom:6px;}
+.cat-toggle{flex:1;padding:11px 0;border-radius:10px;border:1.5px solid var(--bd2);background:var(--bg2);color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;}
+.cat-toggle.on{background:var(--text);color:var(--bg);border-color:transparent;}
+.cat-badge{font-size:9px;padding:2px 6px;border-radius:4px;font-weight:600;flex-shrink:0;cursor:pointer;}
+.cat-badge.shoot{background:#5856D633;color:#5856D6;}
+.cat-badge.etc{background:#FF950033;color:#FF9500;}
 input[type=file]{display:none;}
 
 /* 링크 시트 */
@@ -398,11 +404,15 @@ input[type=file]{display:none;}
       <div class="mgmt-div">탄종 · 가격 관리 (사격 전용)</div>
       <div class="ml" id="caliberList" style="margin-bottom:10px;"></div>
       <div class="add-fields">
-        <input class="ai" type="text" id="newCaliberInput" placeholder="새 탄종 (예: .22LR)" maxlength="14">
+        <input class="ai" type="text" id="newCaliberInput" placeholder="새 버튼 이름 (예: .22LR)" maxlength="14">
         <input class="ai short" type="number" id="newCaliberPrice" placeholder="가격" style="max-width:90px;">
+      </div>
+      <div class="cat-toggle-row">
+        <button type="button" class="cat-toggle on" id="catBtnShoot" onclick="setNewCaliberCat('shoot')">🎯 사격</button>
+        <button type="button" class="cat-toggle" id="catBtnEtc" onclick="setNewCaliberCat('etc')">📦 기타</button>
         <button class="add-ok" onclick="addCaliber()">추가</button>
       </div>
-      <div class="hint" style="margin-top:6px;margin-bottom:0;">가격 입력란을 누르면 바로 수정·저장됩니다</div>
+      <div class="hint" style="margin-top:6px;margin-bottom:0;">가격 입력란을 누르면 바로 수정·저장됩니다. 분류 배지를 누르면 사격/기타가 전환됩니다</div>
       <div class="mgmt-div">입금 계좌 설정</div>
       <input class="ai" type="text" id="depositAccountInput" placeholder="예: 카카오뱅크 3333-01-1234567 홍길동" style="width:100%;margin-bottom:8px;">
       <button class="add-ok" style="width:100%;" onclick="saveDepositAccount()">계좌 저장</button>
@@ -480,6 +490,8 @@ const db=getDatabase(app);
 /* 사격 탄종: 관리자가 커스텀 가능 (Firebase config/shootOptions) */
 let SOPTS=["10","20",".45구경","소총"];
 let SPRICES={}; /* 탄종별 가격: name -> 가격(원) */
+let SCATS={}; /* 탄종별 분류: name -> 'shoot'(사격, 기본값) | 'etc'(기타) */
+let newCaliberCat='shoot'; /* 추가 폼에서 선택중인 분류 */
 const DOPTS=["1차","2차","3차","4차"];
 const DNCLS=["nd0","nd1","nd2","nd3"];
 const SHOOT_PALETTE=["#5856D6","#007AFF","#FF9500","#34C759","#FF3B30","#5AC8FA","#FFCC00","#AF52DE","#8E8E93","#34AADC"];
@@ -554,6 +566,7 @@ function listen(){
     refresh();
   });
   onValue(ref(db,'config/shootPrices'),s=>{SPRICES=s.val()||{};refresh();});
+  onValue(ref(db,'config/shootCategories'),s=>{SCATS=s.val()||{};refresh();});
   onValue(ref(db,'config/depositAccount'),s=>{depositAccount=s.val()||'';refresh();});
   onValue(ref(db,'gsMembers'),s=>{
     gsMembers=s.val()?Object.values(s.val()):[];
@@ -569,6 +582,8 @@ async function saveD(){const o={};for(const id in dinner){if(dinner[id]?.size>0)
 async function saveP(){await set(ref(db,'paid'),Object.keys(paid).length?paid:null);}
 async function saveShootOptions(){await set(ref(db,'config/shootOptions'),SOPTS.length?SOPTS:null);}
 async function saveShootPrices(){await set(ref(db,'config/shootPrices'),Object.keys(SPRICES).length?SPRICES:null);}
+async function saveShootCategories(){await set(ref(db,'config/shootCategories'),Object.keys(SCATS).length?SCATS:null);}
+function catOf(name){return SCATS[name]==='etc'?'etc':'shoot';}
 async function saveGsMembers(){const o={};gsMembers.forEach(m=>{o[m.id]=m;});await set(ref(db,'gsMembers'),Object.keys(o).length?o:null);}
 async function saveGsOptions(){await set(ref(db,'gsOptions'),gsOptions.length?gsOptions:null);}
 async function saveGsDone(){await set(ref(db,'gsDone'),Object.keys(gsDone).length?gsDone:null);}
@@ -965,8 +980,25 @@ window.closeSheet=function(name){document.getElementById(SHEETS[name]).style.dis
 /* ── 탄종 관리(사격 전용) ── */
 function renderCaliberMgmt(){
   const el=document.getElementById('caliberList');if(!el)return;
-  el.innerHTML=SOPTS.map((o,i)=>`<div class='mi'><span class='mi-nm'>${o}</span><span style="display:flex;align-items:center;gap:3px;"><input type='number' class='price-input' value='${SPRICES[o]||0}' onchange='updateCaliberPrice("${o}",this.value)'><span class='price-unit'>원</span></span><button class='mi-del' onclick='delCaliber(${i})' ${SOPTS.length<=1?'disabled':''}>×</button></div>`).join('');
+  el.innerHTML=SOPTS.map((o,i)=>{
+    const cat=catOf(o);
+    const catLabel=cat==='etc'?'기타':'사격';
+    return `<div class='mi'><span class='mi-nm'>${o}</span><span class='cat-badge ${cat}' onclick='toggleCaliberCat("${o.replace(/'/g,"\\'")}")'>${catLabel}</span><span style="display:flex;align-items:center;gap:3px;"><input type='number' class='price-input' value='${SPRICES[o]||0}' onchange='updateCaliberPrice("${o}",this.value)'><span class='price-unit'>원</span></span><button class='mi-del' onclick='delCaliber(${i})' ${SOPTS.length<=1?'disabled':''}>×</button></div>`;
+  }).join('');
+  setNewCaliberCat(newCaliberCat);
 }
+window.setNewCaliberCat=function(cat){
+  newCaliberCat=cat;
+  const sb=document.getElementById('catBtnShoot'),eb=document.getElementById('catBtnEtc');
+  if(sb)sb.className='cat-toggle'+(cat==='shoot'?' on':'');
+  if(eb)eb.className='cat-toggle'+(cat==='etc'?' on':'');
+};
+window.toggleCaliberCat=async function(name){
+  SCATS[name]=catOf(name)==='etc'?'shoot':'etc';
+  await saveShootCategories();
+  renderCaliberMgmt();renderSettle();
+  showToast(name+'이(가) '+(SCATS[name]==='etc'?'기타':'사격')+' 분류로 변경됐습니다');
+};
 window.updateCaliberPrice=async function(name,val){
   const num=parseInt(val)||0;
   SPRICES[name]=num;
@@ -977,24 +1009,28 @@ window.updateCaliberPrice=async function(name,val){
 window.addCaliber=async function(){
   const v=(document.getElementById('newCaliberInput').value||'').trim();
   const priceVal=parseInt(document.getElementById('newCaliberPrice').value)||0;
-  if(!v){showToast('탄종 이름을 입력해주세요');return;}
-  if(SOPTS.includes(v)){showToast('이미 있는 탄종입니다');return;}
+  if(!v){showToast('버튼 이름을 입력해주세요');return;}
+  if(SOPTS.includes(v)){showToast('이미 있는 항목입니다');return;}
   SOPTS.push(v);
   SPRICES[v]=priceVal;
+  SCATS[v]=newCaliberCat;
   await saveShootOptions();
   await saveShootPrices();
+  await saveShootCategories();
   document.getElementById('newCaliberInput').value='';
   document.getElementById('newCaliberPrice').value='';
   renderCaliberMgmt();renderStatus();renderSettle();
-  showToast(v+' 추가됐습니다');
+  showToast(v+' 추가됐습니다 ('+(newCaliberCat==='etc'?'기타':'사격')+')');
 };
 window.delCaliber=async function(i){
   if(SOPTS.length<=1){showToast('최소 1개는 있어야 합니다');return;}
   const removed=SOPTS[i];
   SOPTS=SOPTS.filter((_,idx)=>idx!==i);
   delete SPRICES[removed];
+  delete SCATS[removed];
   await saveShootOptions();
   await saveShootPrices();
+  await saveShootCategories();
   renderCaliberMgmt();renderStatus();renderSettle();
   showToast(removed+' 삭제됐습니다');
 };
@@ -1030,17 +1066,21 @@ window.closeConfirm=function(){document.getElementById('ovConfirm').style.displa
 function buildCsv(){
   const isShoot=mode==='shoot';
   if(isShoot){
-    const rows=[['이름','생년월일','전화번호',...SOPTS,'금액','입금'].join(',')];
+    const rows=[['이름','생년월일','전화번호','사격종류','기타','금액','입금'].join(',')];
     sorted([...members]).filter(m=>shooting[m.id]?.size>0).forEach(m=>{
       const sel=shooting[m.id];
-      rows.push([m.name,m.birth||'',m.phone||'',...SOPTS.map(o=>sel.has(o)?'O':''),memberTotal(m.id),paid[m.id]?'O':''].join(','));
+      const shootStr=SOPTS.filter(o=>sel.has(o)&&catOf(o)==='shoot').join(',');
+      const etcStr=SOPTS.filter(o=>sel.has(o)&&catOf(o)==='etc').join(',');
+      rows.push([m.name,m.birth||'',m.phone||'','"'+shootStr+'"','"'+etcStr+'"',memberTotal(m.id),paid[m.id]?'O':''].join(','));
     });
     return rows.join('\n');
   }
-  const opts=DOPTS,data=dinner;
-  const rows=[['이름','기수',...opts].join(',')];
-  sorted([...members]).forEach(m=>{const sel=data[m.id]||new Set();rows.push([m.name,m.k||'',...opts.map(o=>sel.has(o)?'O':'')].join(','));});
-  return rows.join('\n');
+  const lines=[];
+  sorted([...members]).filter(m=>dinner[m.id]?.size>0).forEach(m=>{
+    const rounds=DOPTS.filter(o=>dinner[m.id].has(o)).join(',');
+    lines.push(`${m.name}${m.k?'('+m.k+')':''}: ${rounds}`);
+  });
+  return lines.join('\n');
 }
 function renderSettle(){
   if(!mode)return;
