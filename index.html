@@ -43,10 +43,12 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'Apple SD 
 .mode-card:active{opacity:.75;}
 .mode-card.shoot{border-color:var(--s1);}
 .mode-card.dinner{border-color:var(--d1);}
+.mode-card.group{border-color:#FF3B30;}
 .mode-ico{font-size:30px;flex-shrink:0;}
 .mode-name{font-size:16px;font-weight:700;margin-bottom:2px;}
 .mode-card.shoot .mode-name{color:var(--s1);}
 .mode-card.dinner .mode-name{color:var(--d1);}
+.mode-card.group .mode-name{color:#FF3B30;}
 .mode-desc{font-size:11px;color:var(--text2);}
 .conn-badge{display:flex;align-items:center;gap:5px;margin-top:18px;}
 .cdot{width:7px;height:7px;border-radius:50%;background:#ccc;transition:background .3s;}
@@ -89,6 +91,26 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'Apple SD 
 #scStatus{padding-bottom:16px;}
 #stTop{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--bg);border-bottom:1px solid var(--bd);}
 #statusOnlyList{padding:8px 14px 24px;}
+
+/* 단체사격 화면 */
+#scGroup{padding-bottom:16px;}
+#gsTop{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--bg);border-bottom:1px solid var(--bd);}
+.gs-weapon-bar{display:flex;gap:6px;padding:0 16px 10px;flex-wrap:wrap;}
+.gs-wbadge{font-size:11px;padding:5px 10px;border-radius:14px;color:#fff;font-weight:600;cursor:pointer;border:2px solid transparent;opacity:.55;}
+.gs-wbadge.active{opacity:1;border-color:rgba(0,0,0,.25);}
+.gs-wbadge.gs-filter-all{background:var(--bg3);color:var(--text);}
+.gs-wbadge.gs-filter-all.active{border-color:var(--text);}
+#gsList{padding:8px 14px 24px;}
+.gs-card{border:1px solid var(--bd);border-radius:var(--r);background:var(--bg);margin-bottom:5px;overflow:hidden;}
+.gs-row{display:flex;align-items:center;padding:13px 12px;gap:8px;cursor:pointer;}
+.gs-row:active{background:var(--bg2);}
+.gs-name{font-size:15px;font-weight:500;}
+.gs-k{font-size:10px;color:var(--text2);background:var(--bg2);padding:2px 6px;border-radius:4px;}
+.gs-weapon-badge{font-size:10px;padding:3px 8px;border-radius:5px;color:#fff;font-weight:600;}
+.gs-done-btn{margin-left:auto;flex-shrink:0;padding:8px 14px;border-radius:18px;border:none;font-size:12px;font-weight:600;cursor:pointer;background:rgba(255,59,48,.16);color:#FF3B30;}
+.gs-done-btn.done{background:rgba(52,199,89,.18);color:#1ea34a;}
+.gs-phone{padding:9px 12px;background:var(--bg2);border-top:1px solid var(--bd);font-size:12px;color:var(--text2);}
+.gs-phone span{text-decoration:underline;cursor:pointer;color:var(--text);}
 
 /* 하단 탭바 */
 #aBar{position:fixed;bottom:0;left:0;right:0;z-index:40;background:var(--bg);border-top:1px solid var(--bd);display:flex;height:var(--bh);padding-bottom:env(safe-area-inset-bottom,0px);}
@@ -181,6 +203,7 @@ input[type=file]{display:none;}
 .pv-total-val{font-size:19px;font-weight:700;color:var(--s1);}
 .pv-notice{font-size:11px;color:var(--text2);text-align:center;line-height:1.7;}
 .pv-share-btn{width:100%;padding:13px;border-radius:var(--r);border:none;margin-top:14px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;background:#FEE500;color:#000;}
+.relogin-btn{flex-shrink:0;font-size:11px;color:var(--text2);text-decoration:underline;border:none;background:none;cursor:pointer;align-self:flex-start;margin-top:3px;}
 .pv-name-input{width:100%;padding:13px 14px;border:1px solid var(--bd2);border-radius:10px;font-size:16px;background:var(--bg2);color:var(--text);outline:none;margin-bottom:10px;}
 .pv-name-input:focus{border-color:var(--acc);}
 .pv-cand-btn{width:100%;text-align:left;padding:13px 14px;border-radius:10px;border:1px solid var(--bd2);background:var(--bg2);font-size:14px;cursor:pointer;margin-bottom:6px;}
@@ -236,6 +259,11 @@ input[type=file]{display:none;}
       <div class="mode-ico">📋</div>
       <div><div class="mode-name">회식 현황</div><div class="mode-desc">체크한 사람만 보기</div></div>
     </div>
+    <div class="mode-group-lbl">🎯 단체사격</div>
+    <div class="mode-card group" onclick="enterGroupShoot()">
+      <div class="mode-ico">👥</div>
+      <div><div class="mode-name">단체사격 현황</div><div class="mode-desc">실시간 참가 체크 · 완료 표시</div></div>
+    </div>
   </div>
   <div class="conn-badge"><div class="cdot" id="cdot"></div><span class="clbl" id="clbl">연결 중</span></div>
   <button class="logout-link" onclick="doLogout()">로그아웃</button>
@@ -284,6 +312,23 @@ input[type=file]{display:none;}
     </div>
   </div>
   <div id="statusOnlyList"></div>
+</div>
+
+<!-- 관리자: 단체사격 화면 -->
+<div class="screen" id="scGroup">
+  <div id="gsTop">
+    <div class="aTop-inner">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <div class="aTop-info">
+        <div class="aTop-title">🎯 단체사격 현황</div>
+        <div class="aTop-sub" id="gsTopSub">로딩 중...</div>
+      </div>
+      <button class="back-btn" onclick="openSheet('links')" title="참여자 링크">🔗</button>
+      <button class="back-btn" onclick="openGsOptionsSheet()" title="총기 옵션 관리">⚙</button>
+    </div>
+    <div class="gs-weapon-bar" id="gsWeaponBar"></div>
+  </div>
+  <div id="gsList"></div>
 </div>
 
 <!-- 참여자 화면 -->
@@ -406,6 +451,24 @@ input[type=file]{display:none;}
 
 <div class="toast" id="toast"></div>
 
+<!-- 단체사격 옵션 관리 시트 -->
+<div class="ov" id="ovGsOptions" style="display:none" onclick="closeGsOptionsSheet()">
+  <div class="sh" onclick="event.stopPropagation()">
+    <div class="handle"></div>
+    <div class="sh-hd"><span class="sh-tt">총기 옵션 관리</span><button class="sh-cl" onclick="closeGsOptionsSheet()">×</button></div>
+    <div class="ml" id="gsOptionList" style="margin-bottom:10px;"></div>
+    <div class="add-fields">
+      <input class="ai" type="text" id="newGsOptionInput" placeholder="새 총기 이름 (예: K-2)" maxlength="14">
+      <button class="add-ok" onclick="addGsOption()">추가</button>
+    </div>
+    <div class="mgmt-div">명단 관리</div>
+    <button class="mgmt-btn red" onclick="confirmGsClear()">
+      <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+      단체사격 명단 전체 비우기
+    </button>
+  </div>
+</div>
+
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import{getDatabase,ref,set,onValue}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
@@ -444,16 +507,36 @@ let mode=null;       /* 'shoot' | 'dinner' */
 let viewType=null;   /* 'settle' | 'status' */
 let stExp=null;
 
+/* 단체사격 상태 */
+let gsMembers=[],gsOptions=[],gsDone={};
+let gsNid=1;
+let gsExp=null;
+let gsFilter='all';
+const GS_PALETTE=["#FF3B30","#FF9500","#FFCC00","#34C759","#5AC8FA","#007AFF","#5856D6","#AF52DE","#8E8E93","#34AADC"];
+function gsColor(i){return GS_PALETTE[i%GS_PALETTE.length];}
+
 /* 참여자 상태 */
 let isParticipant=false;
-let pvStep='category'; /* category | name | confirm | register | check */
+let pvStep='category'; /* category | name | confirm | register | check | gsRegister | gsCheck */
 let pvCategory=null;
 let pvMember=null;
 let pvCandidates=[];
 let pvNewName='';
+let pvGsData={name:'',k:'',birth:'',phone:''};
+let pvGsMember=null;
 
 const params=new URLSearchParams(location.search);
 const isPublicLink=params.get('p')==='1';
+
+/* ── 자동 로그인 (사격/단체사격 전용, 회식 제외) ── */
+const LS_SHOOT_ID='pv_shoot_id';
+const LS_GROUP_ID='pv_group_id';
+function saveShootIdentity(id){try{localStorage.setItem(LS_SHOOT_ID,String(id));}catch(e){}}
+function loadShootIdentity(){try{const v=localStorage.getItem(LS_SHOOT_ID);return v?parseInt(v):null;}catch(e){return null;}}
+function clearShootIdentity(){try{localStorage.removeItem(LS_SHOOT_ID);}catch(e){}}
+function saveGroupIdentity(id){try{localStorage.setItem(LS_GROUP_ID,String(id));}catch(e){}}
+function loadGroupIdentity(){try{const v=localStorage.getItem(LS_GROUP_ID);return v?parseInt(v):null;}catch(e){return null;}}
+function clearGroupIdentity(){try{localStorage.removeItem(LS_GROUP_ID);}catch(e){}}
 
 /* ── Firebase ── */
 function listen(){
@@ -472,6 +555,13 @@ function listen(){
   });
   onValue(ref(db,'config/shootPrices'),s=>{SPRICES=s.val()||{};refresh();});
   onValue(ref(db,'config/depositAccount'),s=>{depositAccount=s.val()||'';refresh();});
+  onValue(ref(db,'gsMembers'),s=>{
+    gsMembers=s.val()?Object.values(s.val()):[];
+    gsNid=gsMembers.length?Math.max(...gsMembers.map(m=>m.id))+1:1;
+    refresh();
+  });
+  onValue(ref(db,'gsOptions'),s=>{gsOptions=(s.exists()&&Array.isArray(s.val()))?s.val():[];refresh();});
+  onValue(ref(db,'gsDone'),s=>{gsDone=s.val()||{};refresh();});
 }
 async function saveM(){const o={};members.forEach(m=>{o[m.id]=m;});await set(ref(db,'members'),Object.keys(o).length?o:null);}
 async function saveS(){const o={};for(const id in shooting){if(shooting[id]?.size>0)o[id]=Array.from(shooting[id]);}await set(ref(db,'shooting'),Object.keys(o).length?o:null);}
@@ -479,13 +569,16 @@ async function saveD(){const o={};for(const id in dinner){if(dinner[id]?.size>0)
 async function saveP(){await set(ref(db,'paid'),Object.keys(paid).length?paid:null);}
 async function saveShootOptions(){await set(ref(db,'config/shootOptions'),SOPTS.length?SOPTS:null);}
 async function saveShootPrices(){await set(ref(db,'config/shootPrices'),Object.keys(SPRICES).length?SPRICES:null);}
+async function saveGsMembers(){const o={};gsMembers.forEach(m=>{o[m.id]=m;});await set(ref(db,'gsMembers'),Object.keys(o).length?o:null);}
+async function saveGsOptions(){await set(ref(db,'gsOptions'),gsOptions.length?gsOptions:null);}
+async function saveGsDone(){await set(ref(db,'gsDone'),Object.keys(gsDone).length?gsDone:null);}
 
 function setConn(ok){
   const d=document.getElementById('cdot'),l=document.getElementById('clbl');
   if(d)d.className='cdot'+(ok?' on':'');
   if(l)l.textContent=ok?'실시간 연결':'연결 끊김';
 }
-function show(id){['scLogin','scMode','scAdmin','scStatus','scPart'].forEach(s=>document.getElementById(s).classList.remove('on'));document.getElementById(id).classList.add('on');}
+function show(id){['scLogin','scMode','scAdmin','scStatus','scGroup','scPart'].forEach(s=>document.getElementById(s).classList.remove('on'));document.getElementById(id).classList.add('on');}
 
 function refresh(){
   updateSub();
@@ -494,6 +587,7 @@ function refresh(){
     if(mode==='shoot'&&document.getElementById('ovMgmt')?.style.display==='flex')renderCaliberMgmt();
   }
   if(mode&&viewType==='status'){renderStatusOnly();}
+  if(document.getElementById('scGroup')?.classList.contains('on'))renderGroupList();
   if(isParticipant)renderParticipant();
 }
 
@@ -540,7 +634,14 @@ window.enterStatus=function(m){
   setPad('stTop','statusOnlyList');
   refresh();
 };
-window.goBack=function(){mode=null;viewType=null;stExp=null;show('scMode');};
+window.enterGroupShoot=function(){
+  mode=null;viewType=null;gsExp=null;gsFilter='all';
+  document.documentElement.style.setProperty('--acc','#FF3B30');
+  show('scGroup');
+  setPad('gsTop','gsList');
+  refresh();
+};
+window.goBack=function(){mode=null;viewType=null;stExp=null;gsExp=null;gsFilter='all';show('scMode');};
 
 function setPad(topId,targetId){
   setTimeout(()=>{
@@ -551,6 +652,7 @@ function setPad(topId,targetId){
 window.addEventListener('resize',()=>{
   if(viewType==='settle')setPad('aTop','statusMain');
   if(viewType==='status')setPad('stTop','statusOnlyList');
+  if(document.getElementById('scGroup')?.classList.contains('on'))setPad('gsTop','gsList');
 });
 
 function updateSub(){
@@ -642,6 +744,112 @@ window.toggleSt=async function(id,ri){
 };
 window.copyMemberPhone=function(phone){
   navigator.clipboard?.writeText(phone).then(()=>showToast('전화번호가 복사됐습니다')).catch(()=>showToast('복사 실패'));
+};
+
+/* ══════════ 단체사격 (관리자) ══════════ */
+function gsSorted(list){return[...list].sort((a,b)=>a.name.localeCompare(b.name,'ko'));}
+
+function renderGroupList(){
+  const subEl=document.getElementById('gsTopSub');
+  const barEl=document.getElementById('gsWeaponBar');
+  const listEl=document.getElementById('gsList');
+  if(!subEl||!barEl||!listEl)return;
+
+  const total=gsMembers.length;
+  const doneCnt=gsMembers.filter(m=>gsDone[m.id]).length;
+  const notDone=total-doneCnt;
+  subEl.innerHTML=`총 ${total}명 · <span style="color:#FF3B30;font-weight:700;">안쏜 사람 ${notDone}명</span>`;
+
+  const allActive=gsFilter==='all'?' active':'';
+  let barHtml=`<span class='gs-wbadge gs-filter-all${allActive}' onclick='setGsFilter("all")'>전체 ${total}</span>`;
+  if(gsOptions.length){
+    barHtml+=gsOptions.map((o,i)=>{
+      const cnt=gsMembers.filter(m=>m.weapon===o).length;
+      const active=gsFilter===o?' active':'';
+      return `<span class='gs-wbadge${active}' style='background:${gsColor(i)}' onclick='setGsFilter("${o.replace(/'/g,"\\'")}")'>${o} ${cnt}</span>`;
+    }).join('');
+  }
+  barEl.innerHTML=barHtml;
+
+  if(!total){
+    listEl.innerHTML="<div class='empty-state'>아직 참가한 사람이 없습니다<br>참여자 링크에서 단체사격을 선택하면 여기 표시됩니다</div>";
+    return;
+  }
+
+  const filtered=gsFilter==='all'?gsMembers:gsMembers.filter(m=>m.weapon===gsFilter);
+  const list=gsSorted(filtered);
+  if(!list.length){
+    listEl.innerHTML=`<div class='empty-state'>'${gsFilter}'을(를) 선택한 사람이 없습니다</div>`;
+    return;
+  }
+  listEl.innerHTML=list.map(m=>{
+    const wi=gsOptions.indexOf(m.weapon);
+    const weaponBadge=m.weapon?`<span class='gs-weapon-badge' style='background:${wi>=0?gsColor(wi):"#8E8E93"}'>${m.weapon}</span>`:'';
+    const isDone=!!gsDone[m.id];
+    const phoneHtml=gsExp===m.id?`<div class='gs-phone'>📞 <span onclick='event.stopPropagation();copyMemberPhone("${(m.phone||"").replace(/'/g,"\\'")}")'>${m.phone||'미등록'}</span> &nbsp;·&nbsp; 🎂 ${m.birth||'미등록'}</div>`:'';
+    return `<div class='gs-card'>
+      <div class='gs-row' onclick='toggleGsExp(${m.id})'>
+        <span class='gs-name'>${m.name}</span>${m.k?`<span class='gs-k'>${m.k}</span>`:''}
+        ${weaponBadge}
+        <button class='gs-done-btn ${isDone?'done':''}' onclick='event.stopPropagation();toggleGsDone(${m.id})'>${isDone?'✅ 완료':'미완료'}</button>
+        <button class='dx' onclick='event.stopPropagation();delGsMember(${m.id},"${m.name.replace(/"/g,'')}")'>×</button>
+      </div>
+      ${phoneHtml}
+    </div>`;
+  }).join('');
+}
+window.setGsFilter=function(f){gsFilter=f;renderGroupList();};
+window.toggleGsExp=function(id){gsExp=gsExp===id?null:id;renderGroupList();};
+window.toggleGsDone=async function(id){
+  if(gsDone[id])delete gsDone[id];else gsDone[id]=true;
+  renderGroupList();
+  await saveGsDone();
+};
+window.delGsMember=async function(id,name){
+  if(!confirm(name+'을(를) 단체사격 명단에서 삭제할까요?'))return;
+  gsMembers=gsMembers.filter(m=>m.id!==id);
+  delete gsDone[id];
+  await saveGsMembers();await saveGsDone();
+  renderGroupList();
+  showToast(name+' 삭제됐습니다');
+};
+
+/* ── 단체사격 옵션 관리 ── */
+window.openGsOptionsSheet=function(){renderGsOptionList();document.getElementById('ovGsOptions').style.display='flex';};
+window.closeGsOptionsSheet=function(){document.getElementById('ovGsOptions').style.display='none';};
+function renderGsOptionList(){
+  const el=document.getElementById('gsOptionList');if(!el)return;
+  if(!gsOptions.length){el.innerHTML="<div style='text-align:center;padding:1rem;color:var(--text2);font-size:13px'>아직 추가된 총기가 없습니다</div>";return;}
+  el.innerHTML=gsOptions.map((o,i)=>`<div class='mi'><span class='mi-nm'>${o}</span><button class='mi-del' onclick='delGsOption(${i})'>×</button></div>`).join('');
+}
+window.addGsOption=async function(){
+  const v=(document.getElementById('newGsOptionInput').value||'').trim();
+  if(!v){showToast('총기 이름을 입력해주세요');return;}
+  if(gsOptions.includes(v)){showToast('이미 있는 총기입니다');return;}
+  gsOptions.push(v);
+  await saveGsOptions();
+  document.getElementById('newGsOptionInput').value='';
+  renderGsOptionList();renderGroupList();
+  showToast(v+' 추가됐습니다');
+};
+window.delGsOption=async function(i){
+  const removed=gsOptions[i];
+  gsOptions=gsOptions.filter((_,idx)=>idx!==i);
+  await saveGsOptions();
+  renderGsOptionList();renderGroupList();
+  showToast(removed+' 삭제됐습니다');
+};
+window.confirmGsClear=function(){
+  document.getElementById('cfIco').textContent='🗑️';
+  document.getElementById('cfTt').textContent='단체사격 명단 비우기';
+  document.getElementById('cfDesc').innerHTML='참가 명단과 완료 기록이<br>전부 삭제됩니다.';
+  document.getElementById('cfOk').onclick=async function(){
+    gsMembers=[];gsDone={};gsNid=1;
+    await set(ref(db,'gsMembers'),null);
+    await set(ref(db,'gsDone'),null);
+    closeConfirm();closeGsOptionsSheet();showToast('단체사격 명단이 비워졌습니다');renderGroupList();
+  };
+  document.getElementById('ovConfirm').style.display='flex';
 };
 
 /* ── 검색 ── */
@@ -855,12 +1063,46 @@ window.shareCsv=function(){
 };
 
 /* ══════════ 참여자 화면 ══════════ */
-window.selectPvCategory=function(cat){pvCategory=cat;pvStep='name';renderParticipant();};
+window.selectPvCategory=function(cat){
+  pvCategory=cat;
+  if(cat==='group'){
+    const savedId=loadGroupIdentity();
+    const found=savedId!=null?gsMembers.find(m=>m.id===savedId):null;
+    if(found){
+      pvGsMember=found;
+      pvGsData={name:found.name,k:found.k,birth:found.birth,phone:found.phone};
+      pvStep='gsCheck';
+    }else{
+      if(savedId!=null)clearGroupIdentity();
+      pvStep='gsRegister';pvGsData={name:'',k:'',birth:'',phone:''};pvGsMember=null;
+    }
+  }else if(cat==='shoot'){
+    const savedId=loadShootIdentity();
+    const found=savedId!=null?members.find(m=>m.id===savedId):null;
+    if(found){
+      pvMember=found;
+      pvStep='check';
+    }else{
+      if(savedId!=null)clearShootIdentity();
+      pvStep='name';
+    }
+  }else{
+    pvStep='name';
+  }
+  renderParticipant();
+};
+window.pvRelogin=function(){
+  if(pvCategory==='shoot'){clearShootIdentity();pvMember=null;pvStep='name';}
+  else if(pvCategory==='group'){clearGroupIdentity();pvGsMember=null;pvGsData={name:'',k:'',birth:'',phone:''};pvStep='gsRegister';}
+  renderParticipant();
+};
 window.pvBack=function(){
   if(pvStep==='check'){pvStep='name';pvMember=null;}
   else if(pvStep==='confirm'){pvStep='name';pvCandidates=[];}
   else if(pvStep==='register'){pvStep='name';}
   else if(pvStep==='name'){pvStep='category';pvCategory=null;}
+  else if(pvStep==='gsCheck'){pvStep='gsRegister';}
+  else if(pvStep==='gsRegister'){pvStep='category';pvCategory=null;pvGsMember=null;}
   renderParticipant();
 };
 window.submitPvName=function(){
@@ -892,7 +1134,10 @@ window.choosePvCandidate=function(id){
 };
 window.confirmPvCandidate=function(id){
   pvMember=members.find(m=>m.id===id);
-  if(pvMember){pvStep='check';renderParticipant();}
+  if(pvMember){
+    if(pvCategory==='shoot')saveShootIdentity(pvMember.id);
+    pvStep='check';renderParticipant();
+  }
 };
 window.denyPvCandidates=function(){
   pvCandidates=[];
@@ -915,6 +1160,7 @@ async function ensurePvMemberSaved(){
     members.push(newMember);
     await saveM();
     pvMember=newMember;
+    if(pvCategory==='shoot')saveShootIdentity(newMember.id);
     return true;
   }
   return false;
@@ -950,6 +1196,36 @@ window.sharePublicLink=function(){
   else navigator.clipboard?.writeText(url).then(()=>pvShowToast('링크 복사됐습니다'));
 };
 
+/* ── 단체사격 (참여자) ── */
+window.submitGsRegister=function(){
+  const name=(document.getElementById('gsName')?.value||'').trim();
+  const kisu=(document.getElementById('gsKisu')?.value||'').trim();
+  const birth=(document.getElementById('gsBirth')?.value||'').trim();
+  const phone=(document.getElementById('gsPhone')?.value||'').trim();
+  const errEl=document.getElementById('gsRegErr');
+  if(!name){if(errEl)errEl.textContent='이름을 입력해주세요';return;}
+  if(name.length<2){if(errEl)errEl.textContent='이름이 너무 짧습니다';return;}
+  const km=kisu.match(/\d+기/);
+  pvGsData={name,k:km?km[0]:kisu,birth,phone};
+  pvGsMember=null;
+  pvStep='gsCheck';
+  renderParticipant();
+};
+window.gsSelectWeapon=async function(weapon){
+  if(!pvGsMember){
+    const newMember={id:gsNid++,name:pvGsData.name,k:pvGsData.k,birth:pvGsData.birth,phone:pvGsData.phone,weapon:''};
+    gsMembers.push(newMember);
+    pvGsMember=newMember;
+    saveGroupIdentity(newMember.id);
+  }
+  const turnOff=pvGsMember.weapon===weapon;
+  pvGsMember.weapon=turnOff?'':weapon;
+  gsMembers=gsMembers.map(m=>m.id===pvGsMember.id?pvGsMember:m);
+  await saveGsMembers();
+  renderParticipant();
+  pvShowToast(turnOff?'선택이 해제됐습니다':weapon+' 선택됐습니다');
+};
+
 function renderParticipant(){
   const head=document.getElementById('pvHeaderWrap');
   const body=document.getElementById('pvBodyWrap');
@@ -966,6 +1242,10 @@ function renderParticipant(){
         <div class="mode-card dinner" onclick="selectPvCategory('dinner')">
           <div class="mode-ico">🍻</div>
           <div><div class="mode-name">회식 참여 체크</div><div class="mode-desc">1차 · 2차 · 3차 · 4차</div></div>
+        </div>
+        <div class="mode-card group" onclick="selectPvCategory('group')">
+          <div class="mode-ico">👥</div>
+          <div><div class="mode-name">단체사격 참가</div><div class="mode-desc">정보 입력 후 총기 선택</div></div>
         </div>
       </div>
     </div>`;
@@ -1017,6 +1297,40 @@ function renderParticipant(){
     return;
   }
 
+  if(pvStep==='gsRegister'){
+    head.innerHTML=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div class="pv-greeting" style="margin-bottom:0;">👥 단체사격 참가</div></div></div>`;
+    body.innerHTML=`<div class="pv-body">
+      <div class="pv-sec-title">정보를 입력해주세요</div>
+      <input class="pv-name-input" id="gsName" type="text" placeholder="이름" maxlength="6" value="${pvGsData.name||''}">
+      <input class="pv-name-input" id="gsKisu" type="text" placeholder="기수 (예: 9기)" maxlength="5" value="${pvGsData.k||''}">
+      <input class="pv-name-input" id="gsBirth" type="text" placeholder="생년월일 (예: 20010315)" maxlength="10" value="${pvGsData.birth||''}">
+      <input class="pv-name-input" id="gsPhone" type="text" placeholder="전화번호" maxlength="13" value="${pvGsData.phone||''}">
+      <button class="btn-pri" onclick="submitGsRegister()">확인</button>
+      <p class="err" id="gsRegErr" style="margin-top:10px;"></p>
+    </div>`;
+    setTimeout(()=>document.getElementById('gsName')?.focus(),200);
+    return;
+  }
+
+  if(pvStep==='gsCheck'){
+    const curWeapon=pvGsMember?pvGsMember.weapon:'';
+    const btns=gsOptions.length
+      ?gsOptions.map((o,i)=>`<button class="pv-btn" style="${curWeapon===o?`background:${gsColor(i)};border-color:${gsColor(i)};color:#fff;`:''}" onclick="gsSelectWeapon('${o.replace(/'/g,"\\'")}')">${o}</button>`).join('')
+      :"";
+    head.innerHTML=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div><div class="pv-greeting" style="margin-bottom:2px;">${pvGsData.name}님 안녕하세요!</div><div class="pv-sub" style="margin-bottom:0;">참가할 총기를 선택해주세요</div></div><button class="relogin-btn" onclick="pvRelogin()">다시 로그인</button></div></div>`;
+    body.innerHTML=`<div class="pv-body">
+      <div class="pv-sec-title">👥 단체사격 총기 선택</div>
+      ${gsOptions.length?`<div class="pv-grid">${btns}</div>`:`<div class="empty-state">아직 관리자가 총기 옵션을 추가하지 않았습니다<br>잠시 후 다시 시도해주세요</div>`}
+      <div class="pv-done sd ${curWeapon?'show':''}">${curWeapon?'✅ '+curWeapon+' 선택됨':''}</div>
+      <p class="pv-notice">선택을 바꾸려면 다른 버튼을 누르면 됩니다<br>같은 버튼을 다시 누르면 선택이 취소됩니다</p>
+      <button class="pv-share-btn" onclick="sharePublicLink()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        카카오톡으로 링크 공유하기
+      </button>
+    </div>`;
+    return;
+  }
+
   if(pvStep==='check'){
     const m=pvMember;if(!m)return;
     const isShoot=pvCategory==='shoot';
@@ -1026,7 +1340,7 @@ function renderParticipant(){
     const checked=[...sel];
     const isNew=(m.id==null);
 
-    head.innerHTML=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div><div class="pv-greeting" style="margin-bottom:2px;">${m.name}님 안녕하세요!</div><div class="pv-sub" style="margin-bottom:0;">참여한 항목을 눌러 체크해주세요</div></div></div></div>`;
+    head.innerHTML=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div><div class="pv-greeting" style="margin-bottom:2px;">${m.name}님 안녕하세요!</div><div class="pv-sub" style="margin-bottom:0;">참여한 항목을 눌러 체크해주세요</div></div>${isShoot?`<button class="relogin-btn" onclick="pvRelogin()">다시 로그인</button>`:''}</div></div>`;
 
     let gridHtml;
     if(isShoot){
