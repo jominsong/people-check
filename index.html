@@ -473,14 +473,34 @@ input[type=file]{display:none;}
     <div class="sh-hd"><span class="sh-tt">총기 옵션 관리</span><button class="sh-cl" onclick="closeGsOptionsSheet()">×</button></div>
     <div class="ml" id="gsOptionList" style="margin-bottom:10px;"></div>
     <div class="add-fields">
-      <input class="ai" type="text" id="newGsOptionInput" placeholder="새 총기 이름 (예: K-2)" maxlength="14">
+      <input class="ai" type="text" id="newGsOptionInput" placeholder="총기 이름 (예: K-2)" maxlength="14">
+      <input class="ai short" type="number" id="newGsRoundsInput" placeholder="발 수" min="1" style="max-width:76px;">
       <button class="add-ok" onclick="addGsOption()">추가</button>
     </div>
+    <div class="hint" style="margin-top:6px;">발 수를 누르면 바로 수정·저장됩니다</div>
+    <div class="mgmt-div">명단 출력</div>
+    <button class="mgmt-btn" onclick="closeGsOptionsSheet();openGsRoster()">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      명단 즉시 출력
+    </button>
     <div class="mgmt-div">명단 관리</div>
     <button class="mgmt-btn red" onclick="confirmGsClear()">
       <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
       단체사격 명단 전체 비우기
     </button>
+  </div>
+</div>
+
+<!-- 단체사격 명단 출력 시트 -->
+<div class="ov" id="ovGsRoster" style="display:none" onclick="closeGsRoster()">
+  <div class="sh" onclick="event.stopPropagation()">
+    <div class="handle"></div>
+    <div class="sh-hd"><span class="sh-tt">단체사격 명단</span><button class="sh-cl" onclick="closeGsRoster()">×</button></div>
+    <div class="ar" style="margin-bottom:12px;">
+      <button class="ab" onclick="copyGsRoster()">복사</button>
+      <button class="ab" onclick="shareGsRoster()">공유</button>
+    </div>
+    <div class="csv-box" id="gsRosterBox" style="max-height:55vh;font-size:12px;"></div>
   </div>
 </div>
 
@@ -580,7 +600,13 @@ function listen(){
     gsNid=gsMembers.length?Math.max(...gsMembers.map(m=>m.id))+1:1;
     refresh();
   });
-  onValue(ref(db,'gsOptions'),s=>{gsOptions=(s.exists()&&Array.isArray(s.val()))?s.val():[];refresh();});
+  onValue(ref(db,'gsOptions'),s=>{
+    if(!s.exists()){gsOptions=[];refresh();return;}
+    const raw=s.val();
+    /* 하위 호환: 기존 string[] 포맷도 변환 */
+    gsOptions=raw.map(o=>typeof o==='string'?{name:o,rounds:0}:o);
+    refresh();
+  });
   onValue(ref(db,'gsDone'),s=>{gsDone=s.val()||{};refresh();});
 }
 async function saveM(){const o={};members.forEach(m=>{o[m.id]=m;});await set(ref(db,'members'),Object.keys(o).length?o:null);}
@@ -772,6 +798,11 @@ window.copyMemberPhone=function(phone){
 /* ══════════ 단체사격 (관리자) ══════════ */
 function gsSorted(list){return[...list].sort((a,b)=>a.name.localeCompare(b.name,'ko'));}
 
+/* gsOptions 헬퍼 */
+function gsOptName(o){return typeof o==='string'?o:(o.name||'');}
+function gsOptRounds(o){return typeof o==='string'?0:(o.rounds||0);}
+function gsOptByName(name){return gsOptions.find(o=>gsOptName(o)===name)||null;}
+
 function renderGroupList(){
   const subEl=document.getElementById('gsTopSub');
   const barEl=document.getElementById('gsWeaponBar');
@@ -787,9 +818,11 @@ function renderGroupList(){
   let barHtml=`<span class='gs-wbadge gs-filter-all${allActive}' onclick='setGsFilter("all")'>전체 ${total}</span>`;
   if(gsOptions.length){
     barHtml+=gsOptions.map((o,i)=>{
-      const cnt=gsMembers.filter(m=>m.weapon===o).length;
-      const active=gsFilter===o?' active':'';
-      return `<span class='gs-wbadge${active}' style='background:${gsColor(i)}' onclick='setGsFilter("${o.replace(/'/g,"\\'")}")'>${o} ${cnt}</span>`;
+      const nm=gsOptName(o),rds=gsOptRounds(o);
+      const cnt=gsMembers.filter(m=>m.weapon===nm).length;
+      const active=gsFilter===nm?' active':'';
+      const label=nm+(rds?` (${rds}발)`:'')+` ${cnt}명`;
+      return `<span class='gs-wbadge${active}' style='background:${gsColor(i)}' onclick='setGsFilter("${nm.replace(/'/g,"\\'")}")'>${label}</span>`;
     }).join('');
   }
   barEl.innerHTML=barHtml;
@@ -806,8 +839,11 @@ function renderGroupList(){
     return;
   }
   listEl.innerHTML=list.map(m=>{
-    const wi=gsOptions.indexOf(m.weapon);
-    const weaponBadge=m.weapon?`<span class='gs-weapon-badge' style='background:${wi>=0?gsColor(wi):"#8E8E93"}'>${m.weapon}</span>`:'';
+    const opt=gsOptByName(m.weapon);
+    const wi=opt?gsOptions.indexOf(opt):-1;
+    const rds=opt?gsOptRounds(opt):0;
+    const wLabel=m.weapon+(rds?` ${rds}발`:'');
+    const weaponBadge=m.weapon?`<span class='gs-weapon-badge' style='background:${wi>=0?gsColor(wi):"#8E8E93"}'>${wLabel}</span>`:'';
     const isDone=!!gsDone[m.id];
     const phoneHtml=gsExp===m.id?`<div class='gs-phone'>📞 <span onclick='event.stopPropagation();copyMemberPhone("${(m.phone||"").replace(/'/g,"\\'")}")'>${m.phone||'미등록'}</span> &nbsp;·&nbsp; 🎂 ${m.birth||'미등록'}</div>`:'';
     return `<div class='gs-card'>
@@ -843,20 +879,41 @@ window.closeGsOptionsSheet=function(){document.getElementById('ovGsOptions').sty
 function renderGsOptionList(){
   const el=document.getElementById('gsOptionList');if(!el)return;
   if(!gsOptions.length){el.innerHTML="<div style='text-align:center;padding:1rem;color:var(--text2);font-size:13px'>아직 추가된 총기가 없습니다</div>";return;}
-  el.innerHTML=gsOptions.map((o,i)=>`<div class='mi'><span class='mi-nm'>${o}</span><button class='mi-del' onclick='delGsOption(${i})'>×</button></div>`).join('');
+  el.innerHTML=gsOptions.map((o,i)=>{
+    const nm=gsOptName(o),rds=gsOptRounds(o);
+    return `<div class='mi'>
+      <span class='mi-nm'>${nm}</span>
+      <span style="display:flex;align-items:center;gap:3px;">
+        <input type='number' class='price-input' value='${rds||""}' placeholder='발수' min='1'
+          onchange='updateGsRounds(${i},this.value)'>
+        <span class='price-unit'>발</span>
+      </span>
+      <button class='mi-del' onclick='delGsOption(${i})'>×</button>
+    </div>`;
+  }).join('');
 }
+window.updateGsRounds=async function(i,val){
+  if(!gsOptions[i])return;
+  const num=parseInt(val)||0;
+  gsOptions[i]={name:gsOptName(gsOptions[i]),rounds:num};
+  await saveGsOptions();
+  renderGroupList();
+  showToast(gsOptName(gsOptions[i])+' 발 수 저장됐습니다');
+};
 window.addGsOption=async function(){
   const v=(document.getElementById('newGsOptionInput').value||'').trim();
+  const rds=parseInt(document.getElementById('newGsRoundsInput').value)||0;
   if(!v){showToast('총기 이름을 입력해주세요');return;}
-  if(gsOptions.includes(v)){showToast('이미 있는 총기입니다');return;}
-  gsOptions.push(v);
+  if(gsOptions.some(o=>gsOptName(o)===v)){showToast('이미 있는 총기입니다');return;}
+  gsOptions.push({name:v,rounds:rds});
   await saveGsOptions();
   document.getElementById('newGsOptionInput').value='';
+  document.getElementById('newGsRoundsInput').value='';
   renderGsOptionList();renderGroupList();
-  showToast(v+' 추가됐습니다');
+  showToast(v+(rds?` (${rds}발)`:'')+' 추가됐습니다');
 };
 window.delGsOption=async function(i){
-  const removed=gsOptions[i];
+  const removed=gsOptName(gsOptions[i]);
   gsOptions=gsOptions.filter((_,idx)=>idx!==i);
   await saveGsOptions();
   renderGsOptionList();renderGroupList();
@@ -873,6 +930,58 @@ window.confirmGsClear=function(){
     closeConfirm();closeGsOptionsSheet();showToast('단체사격 명단이 비워졌습니다');renderGroupList();
   };
   document.getElementById('ovConfirm').style.display='flex';
+};
+
+/* ── 단체사격 명단 출력 ── */
+function buildGsRoster(){
+  if(!gsMembers.length)return'(참가자 없음)';
+  const lines=[];
+  const date=new Date().toLocaleDateString('ko-KR');
+  lines.push(`단체사격 명단 · ${date}`);
+  lines.push('');
+
+  let grandTotal=0,grandRounds=0;
+
+  /* 총기별로 그룹 */
+  const weaponGroups=[];
+  gsOptions.forEach(opt=>{
+    const nm=gsOptName(opt),rds=gsOptRounds(opt);
+    const group=gsSorted(gsMembers.filter(m=>m.weapon===nm));
+    if(group.length)weaponGroups.push({nm,rds,group});
+  });
+  /* 총기 미선택자 */
+  const noWeapon=gsSorted(gsMembers.filter(m=>!m.weapon));
+  if(noWeapon.length)weaponGroups.push({nm:'미선택',rds:0,group:noWeapon});
+
+  weaponGroups.forEach(({nm,rds,group})=>{
+    const subtotalPpl=group.length;
+    const subtotalRds=subtotalPpl*(rds||0);
+    grandTotal+=subtotalPpl;
+    grandRounds+=subtotalRds;
+    lines.push(`━━━ ${nm}${rds?` (${rds}발)`:''} ━━━`);
+    group.forEach((m,idx)=>{
+      lines.push(`${String(idx+1).padStart(2,'0')} ${m.name}  ${m.birth||'생년월일없음'}  ${m.phone||'전화없음'}  ${nm}${rds?` ${rds}발`:''}`);
+    });
+    lines.push(`소계: ${subtotalPpl}명${rds?` / ${subtotalRds}발`:''}`);
+    lines.push('');
+  });
+
+  lines.push('─────────────────────────');
+  lines.push(`합계: 총 ${grandTotal}명 / ${grandRounds}발`);
+  return lines.join('\n');
+}
+window.openGsRoster=function(){
+  const txt=buildGsRoster();
+  const el=document.getElementById('gsRosterBox');
+  if(el)el.textContent=txt;
+  document.getElementById('ovGsRoster').style.display='flex';
+};
+window.closeGsRoster=function(){document.getElementById('ovGsRoster').style.display='none';};
+window.copyGsRoster=function(){navigator.clipboard?.writeText(buildGsRoster()).then(()=>showToast('명단 복사됐습니다'));};
+window.shareGsRoster=function(){
+  const txt=buildGsRoster();
+  if(navigator.share)navigator.share({title:'단체사격 명단',text:txt}).catch(()=>{});
+  else navigator.clipboard?.writeText(txt).then(()=>showToast('명단 복사됐습니다'));
 };
 
 /* ── 검색 ── */
@@ -1443,7 +1552,12 @@ function renderParticipant(){
   if(pvStep==='gsCheck'){
     const curWeapon=pvGsMember?pvGsMember.weapon:'';
     const btns=gsOptions.length
-      ?gsOptions.map((o,i)=>`<button class="pv-btn" style="${curWeapon===o?`background:${gsColor(i)};border-color:${gsColor(i)};color:#fff;`:''}" onclick="gsSelectWeapon('${o.replace(/'/g,"\\'")}')">${o}</button>`).join('')
+      ?gsOptions.map((o,i)=>{
+          const nm=gsOptName(o),rds=gsOptRounds(o);
+          const sel=curWeapon===nm;
+          const lbl=nm+(rds?`\n${rds}발`:'');
+          return `<button class="pv-btn" style="${sel?`background:${gsColor(i)};border-color:${gsColor(i)};color:#fff;`:''}" onclick="gsSelectWeapon('${nm.replace(/'/g,"\\'")}')">${lbl}</button>`;
+        }).join('')
       :"";
     head.innerHTML=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div><div class="pv-greeting" style="margin-bottom:2px;">${pvGsData.name}님 안녕하세요!</div><div class="pv-sub" style="margin-bottom:0;">참가할 총기를 선택해주세요</div></div><button class="relogin-btn" onclick="pvRelogin()">다시 로그인</button></div></div>`;
     body.innerHTML=`<div class="pv-body">
