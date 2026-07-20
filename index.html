@@ -432,6 +432,11 @@ input[type=file]{display:none;}
     <div class="handle"></div>
     <div class="sh-hd"><span class="sh-tt" id="settleTitleTxt">정산</span><button class="sh-cl" onclick="closeSheet('settle')">×</button></div>
     <div class="settle-card">
+      <div id="dinnerPriceSection" style="display:none;margin-bottom:12px;">
+        <div class="sec-lbl" style="margin-bottom:8px;">🍻 차수별 가격 설정</div>
+        <div id="dinnerPriceInputs"></div>
+        <div style="font-size:11px;color:var(--text2);margin-top:4px;">입력하면 바로 계산됩니다. 비워두면 가격 없이 출력됩니다.</div>
+      </div>
       <div id="settleSummary"></div>
       <div class="num-grid" id="settleNums"></div>
       <div class="csv-box" id="settleCsv"></div>
@@ -491,6 +496,7 @@ const db=getDatabase(app);
 let SOPTS=["10","20",".45구경","소총"];
 let SPRICES={}; /* 탄종별 가격: name -> 가격(원) */
 let SCATS={}; /* 탄종별 분류: name -> 'shoot'(사격, 기본값) | 'etc'(기타) */
+let DPRICES={}; /* 회식 차수별 가격: "1차"->가격, ... */
 let newCaliberCat='shoot'; /* 추가 폼에서 선택중인 분류 */
 const DOPTS=["1차","2차","3차","4차"];
 const DNCLS=["nd0","nd1","nd2","nd3"];
@@ -567,6 +573,7 @@ function listen(){
   });
   onValue(ref(db,'config/shootPrices'),s=>{SPRICES=s.val()||{};refresh();});
   onValue(ref(db,'config/shootCategories'),s=>{SCATS=s.val()||{};refresh();});
+  onValue(ref(db,'config/dinnerPrices'),s=>{DPRICES=s.val()||{};refresh();});
   onValue(ref(db,'config/depositAccount'),s=>{depositAccount=s.val()||'';refresh();});
   onValue(ref(db,'gsMembers'),s=>{
     gsMembers=s.val()?Object.values(s.val()):[];
@@ -583,6 +590,7 @@ async function saveP(){await set(ref(db,'paid'),Object.keys(paid).length?paid:nu
 async function saveShootOptions(){await set(ref(db,'config/shootOptions'),SOPTS.length?SOPTS:null);}
 async function saveShootPrices(){await set(ref(db,'config/shootPrices'),Object.keys(SPRICES).length?SPRICES:null);}
 async function saveShootCategories(){await set(ref(db,'config/shootCategories'),Object.keys(SCATS).length?SCATS:null);}
+async function saveDinnerPrices(){await set(ref(db,'config/dinnerPrices'),Object.keys(DPRICES).length?DPRICES:null);}
 function catOf(name){return SCATS[name]==='etc'?'etc':'shoot';}
 async function saveGsMembers(){const o={};gsMembers.forEach(m=>{o[m.id]=m;});await set(ref(db,'gsMembers'),Object.keys(o).length?o:null);}
 async function saveGsOptions(){await set(ref(db,'gsOptions'),gsOptions.length?gsOptions:null);}
@@ -910,25 +918,70 @@ window.handleCSV=async function(inp){
       const raw=e.target.result.replace(/\ufeff/g,'');
       const cleaned=raw.replace(/"[^"]*"/g,m=>m.replace(/\r?\n/g,' '));
       const rows=cleaned.split(/\r?\n/).map(r=>r.split(','));
-      let nc=-1,kc=-1;
-      for(let i=0;i<rows.length;i++){for(let j=0;j<rows[i].length;j++){if(rows[i][j].trim()==='이름'){nc=j;kc=j-1;break;}}if(nc!==-1)break;}
-      if(nc===-1){for(let i=0;i<rows.length;i++){if(rows[i][1]?.trim()==='기수'&&rows[i][2]?.trim()==='이름'){kc=1;nc=2;break;}}}
-      if(nc===-1){showToast('이름 열을 찾지 못했습니다');return;}
-      const skip=['이름','기수','인원수','비고','참고','UPSC'];
+      let nc=-1,kc=-1,bc=-1,pc=-1;
+      let headerRowIdx=-1;
+
+      /* ── 헤더 행 탐색 ──
+         "이름" 셀을 찾으면 그 행 전체에서 각 열을 이름으로 매핑.
+         열 순서는 무관하며, 없는 열은 -1 유지 → 빈 값으로 처리. */
+      const NAME_ALIASES  =['이름'];
+      const KISU_ALIASES  =['기수'];
+      const BIRTH_ALIASES =['생년월일','생일'];
+      const PHONE_ALIASES =['전화번호','전화','연락처','핸드폰','휴대폰'];
+
+      outer:for(let i=0;i<rows.length;i++){
+        for(let j=0;j<rows[i].length;j++){
+          const h=rows[i][j].trim();
+          if(NAME_ALIASES.includes(h)){
+            nc=j;headerRowIdx=i;
+            /* 같은 헤더 행 전체 스캔 */
+            for(let k=0;k<rows[i].length;k++){
+              const hh=rows[i][k].trim();
+              if(KISU_ALIASES.includes(hh))kc=k;
+              if(BIRTH_ALIASES.includes(hh))bc=k;
+              if(PHONE_ALIASES.includes(hh))pc=k;
+            }
+            break outer;
+          }
+        }
+      }
+      if(nc===-1){showToast('이름 열을 찾지 못했습니다\n(헤더에 "이름" 항목이 없거나 CSV 형식이 맞지 않습니다)');return;}
+
+      /* 이름 열은 찾았으나 나머지가 없으면 경고 없이 빈 값으로 처리 */
+      const missingCols=[];
+      if(kc===-1)missingCols.push('기수');
+      if(bc===-1)missingCols.push('생년월일');
+      if(pc===-1)missingCols.push('전화번호');
+
+      const skip=['이름','기수','인원수','비고','참고','UPSC','기수는','만약','입금','오류','파일'];
       const parsed=[];let id=1;
-      for(const row of rows){
-        const name=(row[nc]||'').trim(),kisu=kc>=0?(row[kc]||'').trim():'';
+      for(let ri=0;ri<rows.length;ri++){
+        if(ri===headerRowIdx)continue; /* 헤더 행 건너뜀 */
+        const row=rows[ri];
+        const name=(row[nc]||'').trim();
         if(!name||name.length<2||name.length>6)continue;
         if(/^\d/.test(name))continue;
         if(skip.some(s=>name.includes(s)))continue;
         if(!/^[가-힣]{2,5}$/.test(name))continue;
+
+        const kisu=kc>=0?(row[kc]||'').trim():'';
         const km=kisu.match(/\d+기/);
-        parsed.push({id:id++,name,k:km?km[0]:''});
+
+        /* 생년월일: YYYY.MM.DD / YYYYMMDD / YYYY-MM-DD 등 → YYYYMMDD */
+        let birth=bc>=0?(row[bc]||'').trim():'';
+        birth=birth.replace(/[.\-\s]/g,'');
+
+        /* 전화번호: 공백 제거, 하이픈은 유지 */
+        let phone=pc>=0?(row[pc]||'').trim():'';
+        phone=phone.replace(/\s/g,'');
+
+        parsed.push({id:id++,name,k:km?km[0]:'',birth,phone});
       }
       if(!parsed.length){showToast('유효한 이름을 찾지 못했습니다');return;}
       members=parsed;shooting={};dinner={};paid={};nid=parsed.length+1;
       await saveM();await saveS();await saveD();await saveP();
-      showToast(parsed.length+'명 불러왔습니다');renderMl();
+      const msg=parsed.length+'명 불러왔습니다'+(missingCols.length?' ('+missingCols.join('·')+' 열 없음 — 빈 값으로 저장)':'');
+      showToast(msg);renderMl();
     }catch(err){showToast('파일 오류: '+err.message);}
   };
   rd.readAsText(f,'utf-8');inp.value='';
@@ -1063,6 +1116,10 @@ window.confirmAction=function(action){
 window.closeConfirm=function(){document.getElementById('ovConfirm').style.display='none';};
 
 /* ── 정산(CSV) ── */
+function dinnerPersonTotal(m){
+  if(!dinner[m.id])return 0;
+  let sum=0;dinner[m.id].forEach(o=>{sum+=DPRICES[o]||0;});return sum;
+}
 function buildCsv(){
   const isShoot=mode==='shoot';
   if(isShoot){
@@ -1075,26 +1132,57 @@ function buildCsv(){
     });
     return rows.join('\n');
   }
+  const hasPrices=DOPTS.some(o=>DPRICES[o]>0);
   const lines=[];
   sorted([...members]).filter(m=>dinner[m.id]?.size>0).forEach(m=>{
     const rounds=DOPTS.filter(o=>dinner[m.id].has(o)).join(',');
-    lines.push(`${m.name}${m.k?'('+m.k+')':''}: ${rounds}`);
+    const total=dinnerPersonTotal(m);
+    const amtStr=hasPrices&&total>0?' → '+formatWon(total):'';
+    lines.push(`${m.name}${m.k?'('+m.k+')':''}: ${rounds}${amtStr}`);
   });
+  if(hasPrices){
+    const grandTotal=members.reduce((s,m)=>s+dinnerPersonTotal(m),0);
+    lines.push('');
+    lines.push('─────────────────────');
+    DOPTS.forEach(o=>{
+      const cnt=members.filter(m=>dinner[m.id]?.has(o)).length;
+      const pr=DPRICES[o]||0;
+      if(cnt>0||pr>0)lines.push(`${o}: ${cnt}명${pr?` × ${formatWon(pr)} = ${formatWon(cnt*pr)}`:'(가격 미설정)'}`);
+    });
+    lines.push(`합계: ${formatWon(grandTotal)}`);
+  }
   return lines.join('\n');
 }
 function renderSettle(){
   if(!mode)return;
   const isShoot=mode==='shoot';
+  const dpSec=document.getElementById('dinnerPriceSection');
+  if(dpSec)dpSec.style.display=isShoot?'none':'block';
   if(isShoot){
     const expected=totalExpected(),collected=totalCollected();
     document.getElementById('settleSummary').innerHTML=`<div class="settle-money-row"><div class="money-box"><div class="money-val">${formatWon(expected)}</div><div class="money-lbl">예상 총액</div></div><div class="money-box mc"><div class="money-val">${formatWon(collected)}</div><div class="money-lbl">입금 완료</div></div></div>`;
     document.getElementById('settleNums').innerHTML=SOPTS.map((o,i)=>`<div class='num-box'><div class='num-val' style="color:${shootColor(i)};">${members.filter(m=>shooting[m.id]?.has(o)).length}</div><div class='num-lbl'>${o}</div><div class='num-price'>${formatWon(SPRICES[o]||0)}</div></div>`).join('');
   }else{
-    document.getElementById('settleSummary').innerHTML='';
-    document.getElementById('settleNums').innerHTML=DOPTS.map((o,i)=>`<div class='num-box ${DNCLS[i]}'><div class='num-val'>${members.filter(m=>dinner[m.id]?.has(o)).length}</div><div class='num-lbl'>${o}</div></div>`).join('');
+    /* 회식 차수별 가격 입력 필드 렌더 */
+    const dColors=['var(--d1)','var(--d2)','var(--d3)','var(--d4)'];
+    const dpInputs=document.getElementById('dinnerPriceInputs');
+    if(dpInputs)dpInputs.innerHTML=`<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">${DOPTS.map((o,i)=>`<div style="display:flex;align-items:center;gap:5px;"><span style="font-size:12px;font-weight:600;color:${dColors[i]};width:26px;">${o}</span><input type="number" class="price-input" style="width:100%;" value="${DPRICES[o]||''}" placeholder="가격" onchange="updateDinnerPrice('${o}',this.value)"></div>`).join('')}</div>`;
+    /* 차수별 인원 요약 */
+    const grandTotal=members.reduce((s,m)=>s+dinnerPersonTotal(m),0);
+    const hasPrices=DOPTS.some(o=>DPRICES[o]>0);
+    document.getElementById('settleSummary').innerHTML=hasPrices
+      ?`<div class="settle-money-row"><div class="money-box" style="grid-column:1/-1;"><div class="money-val">${formatWon(grandTotal)}</div><div class="money-lbl">회식 예상 총액</div></div></div>`
+      :'';
+    document.getElementById('settleNums').innerHTML=DOPTS.map((o,i)=>`<div class='num-box ${DNCLS[i]}'><div class='num-val'>${members.filter(m=>dinner[m.id]?.has(o)).length}</div><div class='num-lbl'>${o}${DPRICES[o]?'<br><span style="font-size:10px;color:var(--text2);">'+formatWon(DPRICES[o])+'</span>':''}</div></div>`).join('');
   }
   document.getElementById('settleCsv').textContent=buildCsv();
 }
+window.updateDinnerPrice=async function(round,val){
+  const num=parseInt(val)||0;
+  if(num>0)DPRICES[round]=num;else delete DPRICES[round];
+  await saveDinnerPrices();
+  renderSettle();
+};
 window.copyCsv=function(){navigator.clipboard?.writeText(buildCsv()).then(()=>showToast('복사됐습니다'));};
 window.shareCsv=function(){
   const txt=buildCsv(),title=mode==='shoot'?'사격 정산':'회식 정산';
