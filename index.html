@@ -190,7 +190,8 @@ input[type=file]{display:none;}
 .csv-btn{flex:1;padding:11px;border-radius:var(--r);border:1px solid var(--bd2);background:var(--bg);font-size:12px;font-weight:500;cursor:pointer;text-align:center;}
 
 /* 참여자 화면 */
-#scPart{min-height:100vh;}
+#scPart{display:none;min-height:100vh;}
+#scPart.on{display:block;}
 .pv-top{background:var(--bg);border-bottom:1px solid var(--bd);padding:18px 16px;position:sticky;top:0;z-index:10;}
 .pv-greeting{font-size:19px;font-weight:700;margin-bottom:3px;}
 .pv-sub{font-size:13px;color:var(--text2);}
@@ -354,8 +355,7 @@ input[type=file]{display:none;}
 
 <!-- 참여자 화면 -->
 <div class="screen" id="scPart">
-  <div id="pvHeaderWrap"></div>
-  <div id="pvBodyWrap"></div>
+  <div id="pvWrap"></div>
   <div class="pv-toast" id="pvToast"></div>
 </div>
 
@@ -690,6 +690,7 @@ function refresh(){
 
 function sorted(list){return[...list].sort((a,b)=>{const an=parseInt(a.k)||0,bn=parseInt(b.k)||0;return an!==bn?an-bn:a.name.localeCompare(b.name,'ko');});}
 function getBase(){return location.origin+location.pathname;}
+window.getBase=getBase; /* onclick 속성에서 호출 가능하도록 window에 노출 */
 
 /* ── 로그인/아웃 ── */
 window.doLogin=function(){
@@ -1366,7 +1367,7 @@ window.openShareMsgSheet=function(url){
   history.pushState({upsc:1},'');
 };
 window.closeShareMsgSheet=function(){document.getElementById('ovShareMsg').style.display='none';};
-window.doShareMsg=function(){
+window.doShareWithMsg=function(){
   const msg=(document.getElementById('shareMsgInput')?.value||'').trim();
   const text=msg?msg+'\n\n'+shareMsgUrl:shareMsgUrl;
   if(navigator.share)navigator.share({title:'UPSC 참여 체크',text}).catch(()=>{});
