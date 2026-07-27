@@ -14,6 +14,7 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;}
 
+html,body{overflow-x:hidden;}
 #scLoad{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:999;}
 .spin{width:34px;height:34px;border:3px solid var(--bd2);border-top-color:#5856D6;border-radius:50%;animation:sp .8s linear infinite;}
 @keyframes sp{to{transform:rotate(360deg);}}
@@ -84,7 +85,8 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'Apple SD 
 .strb.od1{background:var(--d2);border-color:var(--d2);color:#fff;}
 .strb.od2{background:var(--d3);border-color:var(--d3);color:#fff;}
 .strb.od3{background:var(--d4);border-color:var(--d4);color:#fff;}
-.st-extra{display:flex;gap:16px;padding:10px 12px;background:var(--bg2);border-top:1px solid var(--bd);font-size:12px;color:var(--text2);flex-wrap:wrap;}
+.st-extra{display:flex;gap:8px;padding:10px 12px;background:var(--bg2);border-top:1px solid var(--bd);font-size:11px;color:var(--text2);flex-wrap:wrap;overflow-x:hidden;}
+.st-extra>div{min-width:0;word-break:break-all;}
 #statusMain{padding:8px 14px 4px;}
 
 /* 현황 전용 화면 (필터링) */
@@ -183,7 +185,7 @@ input[type=file]{display:none;}
 .money-box.mc .money-val{color:#34C759;}
 .money-lbl{font-size:11px;color:var(--text2);margin-top:3px;}
 .nd0 .num-val{color:var(--d1);}.nd1 .num-val{color:var(--d2);}.nd2 .num-val{color:var(--d3);}.nd3 .num-val{color:var(--d4);}
-.csv-box{background:var(--bg);border:1px solid var(--bd2);border-radius:8px;padding:10px;font-size:11px;font-family:monospace;white-space:pre;overflow-x:auto;margin-bottom:8px;line-height:1.7;max-height:150px;overflow-y:auto;color:var(--text);}
+.csv-box{background:var(--bg);border:1px solid var(--bd2);border-radius:8px;padding:10px;font-size:11px;font-family:monospace;white-space:pre-wrap;word-break:break-all;overflow-x:hidden;margin-bottom:8px;line-height:1.7;max-height:150px;overflow-y:auto;color:var(--text);}
 .csv-btns{display:flex;gap:7px;}
 .csv-btn{flex:1;padding:11px;border-radius:var(--r);border:1px solid var(--bd2);background:var(--bg);font-size:12px;font-weight:500;cursor:pointer;text-align:center;}
 
@@ -208,6 +210,19 @@ input[type=file]{display:none;}
 .pv-total-box{display:flex;align-items:center;justify-content:space-between;padding:15px 16px;border-radius:var(--r);background:var(--bg2);margin-bottom:12px;font-size:14px;font-weight:600;}
 .pv-total-val{font-size:19px;font-weight:700;color:var(--s1);}
 .pv-notice{font-size:11px;color:var(--text2);text-align:center;line-height:1.7;}
+.pv-dash-card{border:1px solid var(--bd);border-radius:var(--r);padding:14px;margin-bottom:10px;background:var(--bg);}
+.pv-dash-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.pv-dash-icon{font-size:18px;}
+.pv-dash-title{font-size:15px;font-weight:600;flex:1;}
+.pv-dash-status{font-size:11px;padding:3px 9px;border-radius:10px;}
+.pv-dash-status.ok{background:#ede9ff;color:var(--s1);}
+.pv-dash-status.ok2{background:#e8f8f2;color:var(--d2);}
+.pv-dash-status.none{background:var(--bg2);color:var(--text2);}
+.pv-dash-status.closed{background:#ffe5e5;color:#FF3B30;}
+.pv-dash-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:4px;}
+.pv-dash-tag{font-size:11px;padding:3px 8px;border-radius:12px;background:var(--bg2);color:var(--text2);}
+.share-msg-ta{width:100%;height:80px;padding:12px;border:1px solid var(--bd2);border-radius:10px;font-size:14px;background:var(--bg2);color:var(--text);outline:none;resize:none;margin-bottom:12px;font-family:inherit;}
+.share-msg-ta:focus{border-color:var(--acc);}
 .pv-share-btn{width:100%;padding:13px;border-radius:var(--r);border:none;margin-top:14px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;background:#FEE500;color:#000;}
 .relogin-btn{flex-shrink:0;font-size:11px;color:var(--text2);text-decoration:underline;border:none;background:none;cursor:pointer;align-self:flex-start;margin-top:3px;}
 .pv-name-input{width:100%;padding:13px 14px;border:1px solid var(--bd2);border-radius:10px;font-size:16px;background:var(--bg2);color:var(--text);outline:none;margin-bottom:10px;}
@@ -380,7 +395,7 @@ input[type=file]{display:none;}
     <div class="pub-link-box" id="publicLinkBox"></div>
     <div class="ar">
       <button class="ab" onclick="copyPublicLink()">링크 복사</button>
-      <button class="ab" onclick="sharePublicLinkAdmin()">공유하기</button>
+      <button class="ab" style="font-weight:600;" onclick="openShareMsgSheet(getBase()+'?p=1')">공유하기</button>
     </div>
   </div>
 </div>
@@ -466,6 +481,20 @@ input[type=file]{display:none;}
 
 <div class="toast" id="toast"></div>
 
+<!-- 공유 메시지 입력 시트 -->
+<div class="ov" id="ovShareMsg" style="display:none" onclick="closeShareMsgSheet()">
+  <div class="sh" onclick="event.stopPropagation()">
+    <div class="handle"></div>
+    <div class="sh-hd"><span class="sh-tt">링크 공유</span><button class="sh-cl" onclick="closeShareMsgSheet()">×</button></div>
+    <div class="sec-lbl">함께 전달할 문구 (선택)</div>
+    <textarea class="share-msg-ta" id="shareMsgInput" placeholder="예) 이번 단체사격은 8월까지입니다"></textarea>
+    <div class="ar">
+      <button class="ab" onclick="closeShareMsgSheet()">취소</button>
+      <button class="ab" style="font-weight:600;" onclick="doShareWithMsg()">공유하기</button>
+    </div>
+  </div>
+</div>
+
 <!-- 단체사격 옵션 관리 시트 -->
 <div class="ov" id="ovGsOptions" style="display:none" onclick="closeGsOptionsSheet()">
   <div class="sh" onclick="event.stopPropagation()">
@@ -478,6 +507,13 @@ input[type=file]{display:none;}
       <button class="add-ok" onclick="addGsOption()">추가</button>
     </div>
     <div class="hint" style="margin-top:6px;">발 수를 누르면 바로 수정·저장됩니다</div>
+    <div class="mgmt-div">단체사격 마감 설정</div>
+    <input type="datetime-local" id="gsDeadlineInput" class="ai" style="width:100%;margin-bottom:8px;">
+    <div class="ar" style="margin-bottom:8px;">
+      <button class="ab" style="font-weight:600;" onclick="saveGsDeadline()">마감 시간 저장</button>
+      <button class="ab red" onclick="clearGsDeadline()">마감 해제</button>
+    </div>
+    <div id="gsDeadlineStatus" style="font-size:12px;color:var(--text2);margin-bottom:8px;"></div>
     <div class="mgmt-div">명단 출력</div>
     <button class="mgmt-btn" onclick="closeGsOptionsSheet();openGsRoster()">
       <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
@@ -550,18 +586,25 @@ let gsMembers=[],gsOptions=[],gsDone={};
 let gsNid=1;
 let gsExp=null;
 let gsFilter='all';
+let gsDeadline=null; /* ISO datetime string | null */
+function isGsDeadlinePassed(){return gsDeadline&&new Date()>new Date(gsDeadline);}
+function fmtDeadline(dl){const d=new Date(dl);return`${d.getMonth()+1}월 ${d.getDate()}일 ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;}
+
+/* ── pvUser localStorage (통합 참여자 인증) ── */
+const PV_USER_KEY='pv_user_v2';
+function savePvUser(u){try{localStorage.setItem(PV_USER_KEY,JSON.stringify(u));}catch(e){}}
+function loadPvUser(){try{const v=localStorage.getItem(PV_USER_KEY);return v?JSON.parse(v):null;}catch(e){return null;}}
+function clearPvUser(){try{localStorage.removeItem(PV_USER_KEY);}catch(e){}}
 const GS_PALETTE=["#FF3B30","#FF9500","#FFCC00","#34C759","#5AC8FA","#007AFF","#5856D6","#AF52DE","#8E8E93","#34AADC"];
 function gsColor(i){return GS_PALETTE[i%GS_PALETTE.length];}
 
 /* 참여자 상태 */
 let isParticipant=false;
-let pvStep='category'; /* category | name | confirm | register | check | gsRegister | gsCheck */
-let pvCategory=null;
-let pvMember=null;
-let pvCandidates=[];
-let pvNewName='';
-let pvGsData={name:'',k:'',birth:'',phone:''};
-let pvGsMember=null;
+let pvStep='identity'; /* identity | dashboard | shootEdit | dinnerEdit | gsEdit */
+let pvUser=null;        /* {name,k,birth,phone,memberId,gsMemberId} */
+let pvPendingShoot=null;/* Set | null — 확인 전 로컬 선택 */
+let pvPendingDinner=null;
+let pvPendingGs=null;   /* string | null */
 
 const params=new URLSearchParams(location.search);
 const isPublicLink=params.get('p')==='1';
@@ -595,6 +638,7 @@ function listen(){
   onValue(ref(db,'config/shootCategories'),s=>{SCATS=s.val()||{};refresh();});
   onValue(ref(db,'config/dinnerPrices'),s=>{DPRICES=s.val()||{};refresh();});
   onValue(ref(db,'config/depositAccount'),s=>{depositAccount=s.val()||'';refresh();});
+  onValue(ref(db,'config/gsDeadline'),s=>{gsDeadline=s.val()||null;refresh();});
   onValue(ref(db,'gsMembers'),s=>{
     gsMembers=s.val()?Object.values(s.val()):[];
     gsNid=gsMembers.length?Math.max(...gsMembers.map(m=>m.id))+1:1;
@@ -627,7 +671,11 @@ function setConn(ok){
   if(d)d.className='cdot'+(ok?' on':'');
   if(l)l.textContent=ok?'실시간 연결':'연결 끊김';
 }
-function show(id){['scLogin','scMode','scAdmin','scStatus','scGroup','scPart'].forEach(s=>document.getElementById(s).classList.remove('on'));document.getElementById(id).classList.add('on');}
+function show(id){
+  ['scLogin','scMode','scAdmin','scStatus','scGroup','scPart'].forEach(s=>document.getElementById(s).classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  history.pushState({upsc:1},'');
+}
 
 function refresh(){
   updateSub();
@@ -812,7 +860,7 @@ function renderGroupList(){
   const total=gsMembers.length;
   const doneCnt=gsMembers.filter(m=>gsDone[m.id]).length;
   const notDone=total-doneCnt;
-  subEl.innerHTML=`총 ${total}명 · <span style="color:#FF3B30;font-weight:700;">안쏜 사람 ${notDone}명</span>`;
+  subEl.innerHTML=`총 ${total}명 · <span style="color:#FF3B30;font-weight:700;">안쏜 사람 ${notDone}명</span>${gsDeadline?` · <span style="color:${isGsDeadlinePassed()?'#FF3B30':'var(--text2)'};">${isGsDeadlinePassed()?'마감':'마감 '+fmtDeadline(gsDeadline)}</span>`:''}`;
 
   const allActive=gsFilter==='all'?' active':'';
   let barHtml=`<span class='gs-wbadge gs-filter-all${allActive}' onclick='setGsFilter("all")'>전체 ${total}</span>`;
@@ -874,7 +922,13 @@ window.delGsMember=async function(id,name){
 };
 
 /* ── 단체사격 옵션 관리 ── */
-window.openGsOptionsSheet=function(){renderGsOptionList();document.getElementById('ovGsOptions').style.display='flex';};
+window.openGsOptionsSheet=function(){
+  renderGsOptionList();
+  const dl=document.getElementById('gsDeadlineInput');
+  if(dl&&gsDeadline)dl.value=gsDeadline;
+  document.getElementById('ovGsOptions').style.display='flex';
+  history.pushState({upsc:1},'');
+};
 window.closeGsOptionsSheet=function(){document.getElementById('ovGsOptions').style.display='none';};
 function renderGsOptionList(){
   const el=document.getElementById('gsOptionList');if(!el)return;
@@ -1136,6 +1190,7 @@ window.openSheet=function(name){
     }
   }
   document.getElementById(SHEETS[name]).style.display='flex';
+  history.pushState({upsc:1},'');
 };
 window.closeSheet=function(name){document.getElementById(SHEETS[name]).style.display='none';};
 
@@ -1300,271 +1355,307 @@ window.shareCsv=function(){
 };
 
 /* ══════════ 참여자 화면 ══════════ */
-window.selectPvCategory=function(cat){
-  pvCategory=cat;
-  if(cat==='group'){
-    const savedId=loadGroupIdentity();
-    const found=savedId!=null?gsMembers.find(m=>m.id===savedId):null;
-    if(found){
-      pvGsMember=found;
-      pvGsData={name:found.name,k:found.k,birth:found.birth,phone:found.phone};
-      pvStep='gsCheck';
-    }else{
-      if(savedId!=null)clearGroupIdentity();
-      pvStep='gsRegister';pvGsData={name:'',k:'',birth:'',phone:''};pvGsMember=null;
-    }
-  }else if(cat==='shoot'){
-    const savedId=loadShootIdentity();
-    const found=savedId!=null?members.find(m=>m.id===savedId):null;
-    if(found){
-      pvMember=found;
-      pvStep='check';
-    }else{
-      if(savedId!=null)clearShootIdentity();
-      pvStep='name';
-    }
-  }else{
-    pvStep='name';
+
+/* ── 공유 메시지 시트 ── */
+let shareMsgUrl='';
+window.openShareMsgSheet=function(url){
+  shareMsgUrl=url||getBase()+'?p=1';
+  const inp=document.getElementById('shareMsgInput');
+  if(inp)inp.value='';
+  document.getElementById('ovShareMsg').style.display='flex';
+  history.pushState({upsc:1},'');
+};
+window.closeShareMsgSheet=function(){document.getElementById('ovShareMsg').style.display='none';};
+window.doShareMsg=function(){
+  const msg=(document.getElementById('shareMsgInput')?.value||'').trim();
+  const text=msg?msg+'\n\n'+shareMsgUrl:shareMsgUrl;
+  if(navigator.share)navigator.share({title:'UPSC 참여 체크',text}).catch(()=>{});
+  else navigator.clipboard?.writeText(text).then(()=>showToast('복사됐습니다'));
+  closeShareMsgSheet();
+};
+
+/* ── 단체사격 마감 저장 ── */
+window.saveGsDeadline=async function(){
+  const v=document.getElementById('gsDeadlineInput')?.value||'';
+  await set(ref(db,'config/gsDeadline'),v||null);
+  gsDeadline=v||null;
+  showToast(v?'마감 시간이 설정됐습니다':'마감이 해제됐습니다');
+  renderGroupList();
+};
+
+/* ── popstate (뒤로가기 버튼) ── */
+window.addEventListener('popstate',()=>{
+  /* 열린 시트부터 닫기 */
+  const sheets=['ovShareMsg','ovGsRoster','ovGsOptions','ovConfirm','ovSettle','ovMgmt','ovLinks','ovAdd'];
+  for(const id of sheets){
+    const el=document.getElementById(id);
+    if(el&&el.style.display==='flex'){el.style.display='none';return;}
   }
-  renderParticipant();
-};
-window.pvRelogin=function(){
-  if(pvCategory==='shoot'){clearShootIdentity();pvMember=null;pvStep='name';}
-  else if(pvCategory==='group'){clearGroupIdentity();pvGsMember=null;pvGsData={name:'',k:'',birth:'',phone:''};pvStep='gsRegister';}
-  renderParticipant();
-};
+  /* 시트 없으면 화면 뒤로 */
+  if(isParticipant){window.pvBack();return;}
+  window.goBack();
+});
+
+/* ── pvUser 헬퍼 ── */
+function getPvMember(){return pvUser&&pvUser.memberId!=null?members.find(m=>m.id===pvUser.memberId):null;}
+function getPvGsMember(){return pvUser&&pvUser.gsMemberId!=null?gsMembers.find(m=>m.id===pvUser.gsMemberId):null;}
+
+/* ── 참여자 뒤로가기 ── */
 window.pvBack=function(){
-  if(pvStep==='check'){pvStep='name';pvMember=null;}
-  else if(pvStep==='confirm'){pvStep='name';pvCandidates=[];}
-  else if(pvStep==='register'){pvStep='name';}
-  else if(pvStep==='name'){pvStep='category';pvCategory=null;}
-  else if(pvStep==='gsCheck'){pvStep='gsRegister';}
-  else if(pvStep==='gsRegister'){pvStep='category';pvCategory=null;pvGsMember=null;}
+  if(pvStep==='shootEdit'||pvStep==='dinnerEdit'||pvStep==='gsEdit'){pvStep='dashboard';}
+  else if(pvStep==='dashboard'){pvStep='identity';}
+  else if(pvStep==='gsRegister'){pvStep='identity';}
   renderParticipant();
 };
-window.submitPvName=function(){
-  const name=(document.getElementById('pvNameInput')?.value||'').trim();
-  const errEl=document.getElementById('pvNameErr');
+
+/* ── 로그인 제출 ── */
+window.pvLoginSubmit=function(){
+  const name=(document.getElementById('pvLoginName')?.value||'').trim();
+  const k=(document.getElementById('pvLoginK')?.value||'').trim();
+  const birth=(document.getElementById('pvLoginBirth')?.value||'').replace(/[.\-\s]/g,'');
+  const phone=(document.getElementById('pvLoginPhone')?.value||'').replace(/\s/g,'');
+  const errEl=document.getElementById('pvLoginErr');
   if(!name){if(errEl)errEl.textContent='이름을 입력해주세요';return;}
   if(name.length<2){if(errEl)errEl.textContent='이름이 너무 짧습니다';return;}
-  pvNewName=name;
-  const matches=members.filter(m=>m.name===name);
-
-  if(pvCategory==='shoot'){
-    if(!matches.length){pvStep='register';renderParticipant();return;}
-    pvCandidates=matches;
-    pvStep='confirm';
-    renderParticipant();
-    return;
-  }
-
-  /* 회식: 기존 로직 그대로 유지 */
-  const candEl=document.getElementById('pvCandidateList');
-  if(!matches.length){pvMember={id:null,name,k:''};pvStep='check';renderParticipant();return;}
-  if(matches.length===1){pvMember=matches[0];pvStep='check';renderParticipant();return;}
-  if(errEl)errEl.textContent='동명이인이 있습니다. 본인을 선택해주세요';
-  if(candEl)candEl.innerHTML=matches.map(m=>`<button class='pv-cand-btn' onclick='choosePvCandidate(${m.id})'>${m.name} <span style="color:var(--text2);font-size:12px;">${m.k}</span></button>`).join('');
-};
-window.choosePvCandidate=function(id){
-  pvMember=members.find(m=>m.id===id);
-  if(pvMember){pvStep='check';renderParticipant();}
-};
-window.confirmPvCandidate=function(id){
-  pvMember=members.find(m=>m.id===id);
-  if(pvMember){
-    if(pvCategory==='shoot')saveShootIdentity(pvMember.id);
-    pvStep='check';renderParticipant();
-  }
-};
-window.denyPvCandidates=function(){
-  pvCandidates=[];
-  pvStep='register';
-  renderParticipant();
-};
-window.submitPvRegister=function(){
-  const kisu=(document.getElementById('regKisu')?.value||'').trim();
-  const birth=(document.getElementById('regBirth')?.value||'').trim();
-  const phone=(document.getElementById('regPhone')?.value||'').trim();
-  const km=kisu.match(/\d+기/);
-  pvMember={id:null,name:pvNewName,k:km?km[0]:kisu,birth,phone};
-  pvStep='check';
+  const km=k.match(/\d+기/);
+  /* 명단에서 동일 이름·생년월일로 찾기 */
+  const match=members.find(m=>m.name===name&&m.birth&&m.birth===birth)||
+              members.find(m=>m.name===name&&!birth);
+  const memberId=match?match.id:null;
+  pvUser={name,k:km?km[0]:k,birth,phone,memberId,gsMemberId:null};
+  savePvUser(pvUser);
+  pvStep='dashboard';
   renderParticipant();
 };
 
-async function ensurePvMemberSaved(){
-  if(pvMember.id==null){
-    const newMember={id:nid++,name:pvMember.name,k:pvMember.k||'',birth:pvMember.birth||'',phone:pvMember.phone||''};
-    members.push(newMember);
+/* ── 로그아웃 (다시 로그인) ── */
+window.pvLogout=function(){
+  clearPvUser();pvUser=null;
+  pvStep='identity';pvPendingShoot=null;pvPendingDinner=null;pvPendingGs=null;
+  renderParticipant();
+};
+
+/* ── 사격 ── */
+window.openShootEdit=function(){
+  const m=getPvMember();
+  /* 이미 확인된 선택 또는 빈 상태로 시작 */
+  pvPendingShoot=m&&shooting[m.id]?new Set(shooting[m.id]):new Set();
+  pvStep='shootEdit';renderParticipant();
+};
+window.togglePendingShoot=function(o){
+  if(!pvPendingShoot)pvPendingShoot=new Set();
+  pvPendingShoot.has(o)?pvPendingShoot.delete(o):pvPendingShoot.add(o);
+  renderParticipant();
+};
+window.confirmShoot=async function(){
+  if(!pvUser){showPvToast('먼저 로그인해주세요');return;}
+  /* 신규 멤버 자동 추가 */
+  if(pvUser.memberId==null){
+    const nm={id:nid++,name:pvUser.name,k:pvUser.k||'',birth:pvUser.birth||'',phone:pvUser.phone||''};
+    members.push(nm);pvUser.memberId=nm.id;pvUser.gsMemberId=pvUser.gsMemberId;savePvUser(pvUser);
     await saveM();
-    pvMember=newMember;
-    if(pvCategory==='shoot')saveShootIdentity(newMember.id);
-    return true;
   }
-  return false;
-}
-window.pvToggle=async function(ri){
-  const wasNew=await ensurePvMemberSaved();
-  const opts=pvCategory==='shoot'?SOPTS:DOPTS,data=pvCategory==='shoot'?shooting:dinner;
-  if(!data[pvMember.id])data[pvMember.id]=new Set();
-  const o=opts[ri];
-  const turnedOn=!data[pvMember.id].has(o);
-  turnedOn?data[pvMember.id].add(o):data[pvMember.id].delete(o);
-  renderParticipant();
-  if(pvCategory==='shoot')await saveS();else await saveD();
-  if(wasNew)pvShowToast(`명단에 추가됐습니다 · ${o} ${turnedOn?'체크':'해제'}됐습니다`);
-  else pvShowToast(`${o} ${turnedOn?'체크':'해제'}됐습니다`);
+  const id=pvUser.memberId;
+  if(pvPendingShoot&&pvPendingShoot.size>0){
+    shooting[id]=pvPendingShoot;await saveS();
+  }else{
+    delete shooting[id];await saveS();
+  }
+  pvStep='dashboard';pvPendingShoot=null;renderParticipant();
+  showPvToast('사격 신청이 완료됐습니다');
 };
-window.pvTogglePaid=async function(){
-  const wasNew=await ensurePvMemberSaved();
-  const id=pvMember.id;
-  const turnedOn=!paid[id];
-  if(turnedOn)paid[id]=true;else delete paid[id];
-  renderParticipant();
-  await saveP();
-  pvShowToast((wasNew?'명단에 추가됐습니다 · ':'')+(turnedOn?'입금 완료로 체크됐습니다':'입금 완료가 취소됐습니다'));
+window.cancelShoot=async function(){
+  if(!pvUser||pvUser.memberId==null)return;
+  delete shooting[pvUser.memberId];
+  await saveS();renderParticipant();showPvToast('사격 신청이 취소됐습니다');
 };
+
+/* ── 회식 ── */
+window.openDinnerEdit=function(){
+  const m=getPvMember();
+  pvPendingDinner=m&&dinner[m.id]?new Set(dinner[m.id]):new Set();
+  pvStep='dinnerEdit';renderParticipant();
+};
+window.togglePendingDinner=function(o){
+  if(!pvPendingDinner)pvPendingDinner=new Set();
+  pvPendingDinner.has(o)?pvPendingDinner.delete(o):pvPendingDinner.add(o);
+  renderParticipant();
+};
+window.confirmDinner=async function(){
+  if(!pvUser){showPvToast('먼저 로그인해주세요');return;}
+  if(pvUser.memberId==null){
+    const nm={id:nid++,name:pvUser.name,k:pvUser.k||'',birth:pvUser.birth||'',phone:pvUser.phone||''};
+    members.push(nm);pvUser.memberId=nm.id;savePvUser(pvUser);
+    await saveM();
+  }
+  const id=pvUser.memberId;
+  if(pvPendingDinner&&pvPendingDinner.size>0){
+    dinner[id]=pvPendingDinner;await saveD();
+  }else{
+    delete dinner[id];await saveD();
+  }
+  pvStep='dashboard';pvPendingDinner=null;renderParticipant();
+  showPvToast('회식 신청이 완료됐습니다');
+};
+window.cancelDinner=async function(){
+  if(!pvUser||pvUser.memberId==null)return;
+  delete dinner[pvUser.memberId];
+  await saveD();renderParticipant();showPvToast('회식 신청이 취소됐습니다');
+};
+
+/* ── 입금 토글 (대시보드에서) ── */
+window.togglePaidFromDash=async function(){
+  if(!pvUser||pvUser.memberId==null)return;
+  const id=pvUser.memberId;
+  if(paid[id])delete paid[id];else paid[id]=true;
+  await saveP();renderParticipant();
+  showPvToast(paid[id]?'입금 완료 표시됐습니다':'입금 표시가 취소됐습니다');
+};
+
+/* ── 단체사격 ── */
+window.openGsEdit=function(){
+  const gm=getPvGsMember();
+  pvPendingGs=gm?gm.weapon:'';
+  pvStep=pvUser?.name?'gsEdit':'gsRegister';
+  renderParticipant();
+};
+window.pvGsRegisterSubmit=function(){
+  const name=(document.getElementById('gsRegName')?.value||'').trim()||pvUser?.name||'';
+  const k=(document.getElementById('gsRegK')?.value||'').trim()||pvUser?.k||'';
+  const birth=(document.getElementById('gsRegBirth')?.value||'').replace(/[.\-\s]/g,'')||pvUser?.birth||'';
+  const phone=(document.getElementById('gsRegPhone')?.value||'').replace(/\s/g,'')||pvUser?.phone||'';
+  const errEl=document.getElementById('gsRegErr2');
+  if(!name){if(errEl)errEl.textContent='이름을 입력해주세요';return;}
+  pvUser={...pvUser,name,k,birth,phone};savePvUser(pvUser);
+  pvPendingGs='';pvStep='gsEdit';renderParticipant();
+};
+window.togglePendingGs=function(nm){
+  pvPendingGs=pvPendingGs===nm?'':nm;renderParticipant();
+};
+window.confirmGs=async function(){
+  if(!pvUser){showPvToast('먼저 로그인해주세요');return;}
+  const existing=getPvGsMember();
+  if(existing){
+    /* 기존 항목 업데이트 */
+    existing.weapon=pvPendingGs||'';
+    gsMembers=gsMembers.map(m=>m.id===existing.id?existing:m);
+  }else{
+    /* 신규 추가 */
+    const nm={id:gsNid++,name:pvUser.name,k:pvUser.k||'',birth:pvUser.birth||'',phone:pvUser.phone||'',weapon:pvPendingGs||''};
+    gsMembers.push(nm);pvUser.gsMemberId=nm.id;savePvUser(pvUser);
+  }
+  await saveGsMembers();
+  pvStep='dashboard';pvPendingGs=null;renderParticipant();
+  showPvToast('단체사격 신청이 완료됐습니다');
+};
+window.cancelGs=async function(){
+  const gm=getPvGsMember();if(!gm)return;
+  gsMembers=gsMembers.filter(m=>m.id!==gm.id);
+  delete gsDone[gm.id];
+  pvUser.gsMemberId=null;savePvUser(pvUser);
+  await saveGsMembers();await saveGsDone();
+  renderParticipant();showPvToast('단체사격 신청이 취소됐습니다');
+};
+
+/* ── 계좌번호 복사 ── */
 window.copyDepositAccount=function(){
   if(!depositAccount)return;
-  navigator.clipboard?.writeText(depositAccount).then(()=>pvShowToast('계좌번호가 복사됐습니다')).catch(()=>{});
+  navigator.clipboard?.writeText(depositAccount).then(()=>showPvToast('계좌번호가 복사됐습니다')).catch(()=>{});
 };
 window.sharePublicLink=function(){
-  const url=getBase()+'?p=1';
-  if(navigator.share)navigator.share({title:'UPSC 참여 체크',text:'사격/회식 참여 체크 링크입니다! 본인 이름으로 체크해주세요.',url}).catch(()=>{});
-  else navigator.clipboard?.writeText(url).then(()=>pvShowToast('링크 복사됐습니다'));
+  window.openShareMsgSheet(getBase()+'?p=1');
 };
 
-/* ── 단체사격 (참여자) ── */
-window.submitGsRegister=function(){
-  const name=(document.getElementById('gsName')?.value||'').trim();
-  const kisu=(document.getElementById('gsKisu')?.value||'').trim();
-  const birth=(document.getElementById('gsBirth')?.value||'').trim();
-  const phone=(document.getElementById('gsPhone')?.value||'').trim();
-  const errEl=document.getElementById('gsRegErr');
-  if(!name){if(errEl)errEl.textContent='이름을 입력해주세요';return;}
-  if(name.length<2){if(errEl)errEl.textContent='이름이 너무 짧습니다';return;}
-  const km=kisu.match(/\d+기/);
-  pvGsData={name,k:km?km[0]:kisu,birth,phone};
-  pvGsMember=null;
-  pvStep='gsCheck';
-  renderParticipant();
-};
-window.gsSelectWeapon=async function(weapon){
-  if(!pvGsMember){
-    const newMember={id:gsNid++,name:pvGsData.name,k:pvGsData.k,birth:pvGsData.birth,phone:pvGsData.phone,weapon:''};
-    gsMembers.push(newMember);
-    pvGsMember=newMember;
-    saveGroupIdentity(newMember.id);
-  }
-  const turnOff=pvGsMember.weapon===weapon;
-  pvGsMember.weapon=turnOff?'':weapon;
-  gsMembers=gsMembers.map(m=>m.id===pvGsMember.id?pvGsMember:m);
-  await saveGsMembers();
-  renderParticipant();
-  pvShowToast(turnOff?'선택이 해제됐습니다':weapon+' 선택됐습니다');
-};
-
+/* ── 렌더링 ── */
 function renderParticipant(){
   const head=document.getElementById('pvHeaderWrap');
   const body=document.getElementById('pvBodyWrap');
   if(!head||!body)return;
 
-  if(pvStep==='category'){
-    head.innerHTML=`<div class="pv-top"><div class="pv-greeting">UPSC 참여 체크</div><div class="pv-sub">참여할 항목을 선택해주세요</div></div>`;
+  /* 자동로그인: identity 단계에서 members 로드 완료 시 확인 */
+  if(pvStep==='identity'&&pvUser){
+    if(pvUser.memberId!=null){
+      const stillExists=members.find(m=>m.id===pvUser.memberId);
+      if(!stillExists&&members.length>0){clearPvUser();pvUser=null;}
+    }
+    if(pvUser)pvStep='dashboard';
+  }
+
+  /* ── identity (로그인) ── */
+  if(pvStep==='identity'){
+    head.innerHTML=`<div class="pv-top"><div class="pv-greeting">UPSC 참여 체크</div><div class="pv-sub">정보를 입력해주세요</div></div>`;
     body.innerHTML=`<div class="pv-body">
-      <div class="mode-cards">
-        <div class="mode-card shoot" onclick="selectPvCategory('shoot')">
-          <div class="mode-ico">🎯</div>
-          <div><div class="mode-name">사격 참여 체크</div><div class="mode-desc">탄종 선택 · 입금 확인</div></div>
-        </div>
-        <div class="mode-card dinner" onclick="selectPvCategory('dinner')">
-          <div class="mode-ico">🍻</div>
-          <div><div class="mode-name">회식 참여 체크</div><div class="mode-desc">1차 · 2차 · 3차 · 4차</div></div>
-        </div>
-        <div class="mode-card group" onclick="selectPvCategory('group')">
-          <div class="mode-ico">👥</div>
-          <div><div class="mode-name">단체사격 참가</div><div class="mode-desc">정보 입력 후 총기 선택</div></div>
-        </div>
+      <div class="pv-sec-title">이름 및 정보 입력</div>
+      <input class="pv-name-input" id="pvLoginName" type="text" placeholder="이름" maxlength="6">
+      <input class="pv-name-input" id="pvLoginK" type="text" placeholder="기수 (예: 9기)" maxlength="5">
+      <input class="pv-name-input" id="pvLoginBirth" type="text" placeholder="생년월일 (예: 20060115)" maxlength="8">
+      <input class="pv-name-input" id="pvLoginPhone" type="text" placeholder="전화번호" maxlength="13">
+      <button class="btn-pri" onclick="pvLoginSubmit()">입력 완료</button>
+      <p class="err" id="pvLoginErr" style="margin-top:10px;"></p>
+      <p class="pv-notice" style="margin-top:12px;">입력 정보는 UPSC 내부에서만 사용됩니다</p>
+    </div>`;
+    setTimeout(()=>document.getElementById('pvLoginName')?.focus(),200);
+    return;
+  }
+
+  /* ── dashboard ── */
+  if(pvStep==='dashboard'){
+    const m=getPvMember();
+    const gm=getPvGsMember();
+    const shootSel=m&&shooting[m.id]?[...shooting[m.id]]:[];
+    const dinnerSel=m&&dinner[m.id]?[...dinner[m.id]]:[];
+    const gsSel=gm?gm.weapon:'';
+    const isPaid=m?!!paid[m.id]:false;
+
+    /* 사격 카드 */
+    const shootConf=shootSel.length>0;
+    const shootTags=shootSel.map(o=>`<span class='pv-dash-tag'>${o}</span>`).join('');
+    const shootTotal=shootSel.reduce((s,o)=>s+(SPRICES[o]||0),0);
+    const shootCard=`<div class="pv-dash-card">
+      <div class="pv-dash-header"><span class="pv-dash-icon">🎯</span><span class="pv-dash-title">사격</span>
+        <span class="pv-dash-status ${shootConf?'ok':'none'}">${shootConf?'신청 완료':'미신청'}</span>
+      </div>
+      ${shootConf?`<div class="pv-dash-tags">${shootTags}</div><div style="font-size:11px;color:var(--text2);margin-bottom:8px;">💰 ${formatWon(shootTotal)} · ${isPaid?'✅ 입금 완료':'❌ 미입금'}</div>`:''}
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="ab" style="flex:1;" onclick="openShootEdit()">${shootConf?'수정':'신청하기'}</button>
+        ${shootConf?`<button class="ab red" onclick="cancelShoot()">취소</button>`:''}
+        ${shootConf&&depositAccount?`<button class="ab" onclick="togglePaidFromDash()">${isPaid?'입금 취소':'입금 완료'}</button>`:''}
+      </div>
+      ${depositAccount?`<div class="pub-link-box" onclick="copyDepositAccount()" style="cursor:pointer;margin-top:8px;font-size:12px;">${depositAccount}<div style="font-size:10px;color:var(--text2);margin-top:2px;">👆 계좌번호 복사</div></div>`:''}
+    </div>`;
+
+    /* 회식 카드 */
+    const dinnerConf=dinnerSel.length>0;
+    const dinnerTags=dinnerSel.map(o=>`<span class='pv-dash-tag'>${o}</span>`).join('');
+    const dinnerTotal=dinnerSel.reduce((s,o)=>s+(DPRICES[o]||0),0);
+    const dinnerCard=`<div class="pv-dash-card">
+      <div class="pv-dash-header"><span class="pv-dash-icon">🍻</span><span class="pv-dash-title">회식</span>
+        <span class="pv-dash-status ${dinnerConf?'ok2':'none'}">${dinnerConf?'신청 완료':'미신청'}</span>
+      </div>
+      ${dinnerConf?`<div class="pv-dash-tags">${dinnerTags}</div>${dinnerTotal>0?`<div style="font-size:11px;color:var(--text2);margin-bottom:8px;">💰 ${formatWon(dinnerTotal)}</div>`:''}`:'' }
+      <div style="display:flex;gap:8px;">
+        <button class="ab" style="flex:1;" onclick="openDinnerEdit()">${dinnerConf?'수정':'신청하기'}</button>
+        ${dinnerConf?`<button class="ab red" onclick="cancelDinner()">취소</button>`:''}
       </div>
     </div>`;
-    return;
-  }
 
-  if(pvStep==='name'){
-    const label=pvCategory==='shoot'?'🎯 사격 참여 체크':'🍻 회식 참여 체크';
-    head.innerHTML=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div class="pv-greeting" style="margin-bottom:0;">${label}</div></div></div>`;
-    body.innerHTML=`<div class="pv-body">
-      <div class="pv-sec-title">이름을 입력해주세요</div>
-      <input class="pv-name-input" id="pvNameInput" type="text" placeholder="이름" maxlength="6">
-      <button class="btn-pri" onclick="submitPvName()">확인</button>
-      <p class="err" id="pvNameErr" style="margin-top:10px;"></p>
-      <div id="pvCandidateList" style="margin-top:10px;"></div>
+    /* 단체사격 카드 */
+    const gsClosed=isGsDeadlinePassed();
+    const gsConf=!!gsSel;
+    const gsCard=`<div class="pv-dash-card">
+      <div class="pv-dash-header"><span class="pv-dash-icon">👥</span><span class="pv-dash-title">단체사격</span>
+        <span class="pv-dash-status ${gsClosed?'closed':gsConf?'ok':'none'}">${gsClosed?'마감':'신청 완료'&&gsConf?'신청 완료':'미신청'}</span>
+      </div>
+      ${gsConf?`<div class="pv-dash-tags"><span class="pv-dash-tag">${gsSel}</span></div>`:''}
+      ${gsClosed?`<div style="font-size:12px;color:#FF3B30;margin-bottom:8px;">마감: ${fmtDeadline(gsDeadline)}</div>`:
+        `<div style="display:flex;gap:8px;">
+          <button class="ab" style="flex:1;" onclick="openGsEdit()">${gsConf?'수정':'신청하기'}</button>
+          ${gsConf?`<button class="ab red" onclick="cancelGs()">취소</button>`:''}
+        </div>`}
     </div>`;
-    setTimeout(()=>document.getElementById('pvNameInput')?.focus(),200);
-    const inp=document.getElementById('pvNameInput');
-    if(inp)inp.addEventListener('keydown',e=>{if(e.key==='Enter')window.submitPvName();});
-    return;
-  }
 
-  if(pvStep==='confirm'){
-    head.innerHTML=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div class="pv-greeting" style="margin-bottom:0;">본인 확인</div></div></div>`;
-    const cards=pvCandidates.map(m=>`
-      <div class="pv-cand-card" onclick="confirmPvCandidate(${m.id})">
-        <div style="font-weight:600;font-size:15px;">${m.name} <span style="color:var(--text2);font-size:12px;">${m.k}</span></div>
-        <div style="font-size:13px;color:var(--text2);margin-top:3px;">생년월일: ${m.birth||'미등록'}</div>
-      </div>`).join('');
-    body.innerHTML=`<div class="pv-body">
-      <div class="pv-sec-title">${pvNewName}님, 본인이 맞나요?</div>
-      ${cards}
-      <button class="ab" style="width:100%;margin-top:6px;padding:13px;" onclick="denyPvCandidates()">해당 없음 · 새로 등록할게요</button>
-    </div>`;
-    return;
-  }
-
-  if(pvStep==='register'){
-    head.innerHTML=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div class="pv-greeting" style="margin-bottom:0;">신규 등록</div></div></div>`;
-    body.innerHTML=`<div class="pv-body">
-      <div class="pv-sec-title">처음 참여하시는군요! 정보를 입력해주세요</div>
-      <div style="font-size:14px;font-weight:600;margin-bottom:10px;">이름: ${pvNewName}</div>
-      <input class="pv-name-input" id="regKisu" type="text" placeholder="기수 (예: 9기)" maxlength="5">
-      <input class="pv-name-input" id="regBirth" type="text" placeholder="생년월일 (예: 20010315)" maxlength="10">
-      <input class="pv-name-input" id="regPhone" type="text" placeholder="전화번호" maxlength="13">
-      <button class="btn-pri" onclick="submitPvRegister()">확인</button>
-    </div>`;
-    setTimeout(()=>document.getElementById('regKisu')?.focus(),200);
-    return;
-  }
-
-  if(pvStep==='gsRegister'){
-    head.innerHTML=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div class="pv-greeting" style="margin-bottom:0;">👥 단체사격 참가</div></div></div>`;
-    body.innerHTML=`<div class="pv-body">
-      <div class="pv-sec-title">정보를 입력해주세요</div>
-      <input class="pv-name-input" id="gsName" type="text" placeholder="이름" maxlength="6" value="${pvGsData.name||''}">
-      <input class="pv-name-input" id="gsKisu" type="text" placeholder="기수 (예: 9기)" maxlength="5" value="${pvGsData.k||''}">
-      <input class="pv-name-input" id="gsBirth" type="text" placeholder="생년월일 (예: 20010315)" maxlength="10" value="${pvGsData.birth||''}">
-      <input class="pv-name-input" id="gsPhone" type="text" placeholder="전화번호" maxlength="13" value="${pvGsData.phone||''}">
-      <button class="btn-pri" onclick="submitGsRegister()">확인</button>
-      <p class="err" id="gsRegErr" style="margin-top:10px;"></p>
-    </div>`;
-    setTimeout(()=>document.getElementById('gsName')?.focus(),200);
-    return;
-  }
-
-  if(pvStep==='gsCheck'){
-    const curWeapon=pvGsMember?pvGsMember.weapon:'';
-    const btns=gsOptions.length
-      ?gsOptions.map((o,i)=>{
-          const nm=gsOptName(o),rds=gsOptRounds(o);
-          const sel=curWeapon===nm;
-          const lbl=nm+(rds?`\n${rds}발`:'');
-          return `<button class="pv-btn" style="${sel?`background:${gsColor(i)};border-color:${gsColor(i)};color:#fff;`:''}" onclick="gsSelectWeapon('${nm.replace(/'/g,"\\'")}')">${lbl}</button>`;
-        }).join('')
-      :"";
-    head.innerHTML=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div><div class="pv-greeting" style="margin-bottom:2px;">${pvGsData.name}님 안녕하세요!</div><div class="pv-sub" style="margin-bottom:0;">참가할 총기를 선택해주세요</div></div><button class="relogin-btn" onclick="pvRelogin()">다시 로그인</button></div></div>`;
-    body.innerHTML=`<div class="pv-body">
-      <div class="pv-sec-title">👥 단체사격 총기 선택</div>
-      ${gsOptions.length?`<div class="pv-grid">${btns}</div>`:`<div class="empty-state">아직 관리자가 총기 옵션을 추가하지 않았습니다<br>잠시 후 다시 시도해주세요</div>`}
-      <div class="pv-done sd ${curWeapon?'show':''}">${curWeapon?'✅ '+curWeapon+' 선택됨':''}</div>
-      <p class="pv-notice">선택을 바꾸려면 다른 버튼을 누르면 됩니다<br>같은 버튼을 다시 누르면 선택이 취소됩니다</p>
+    head.innerHTML=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><div><div class="pv-greeting">${pvUser.name}님 안녕하세요!</div><div class="pv-sub">신청할 항목을 선택하세요</div></div><button class="relogin-btn" onclick="pvLogout()">다시 로그인</button></div></div>`;
+    body.innerHTML=`<div class="pv-body">${shootCard}${dinnerCard}${gsCard}
       <button class="pv-share-btn" onclick="sharePublicLink()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
         카카오톡으로 링크 공유하기
@@ -1573,56 +1664,73 @@ function renderParticipant(){
     return;
   }
 
-  if(pvStep==='check'){
-    const m=pvMember;if(!m)return;
-    const isShoot=pvCategory==='shoot';
-    const opts=isShoot?SOPTS:DOPTS;
-    const data=isShoot?shooting:dinner;
-    const sel=(m.id!=null&&data[m.id])?data[m.id]:new Set();
+  /* ── shootEdit ── */
+  if(pvStep==='shootEdit'){
+    const sel=pvPendingShoot||new Set();
     const checked=[...sel];
-    const isNew=(m.id==null);
-
-    head.innerHTML=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div><div class="pv-greeting" style="margin-bottom:2px;">${m.name}님 안녕하세요!</div><div class="pv-sub" style="margin-bottom:0;">참여한 항목을 눌러 체크해주세요</div></div>${isShoot?`<button class="relogin-btn" onclick="pvRelogin()">다시 로그인</button>`:''}</div></div>`;
-
-    let gridHtml;
-    if(isShoot){
-      gridHtml=opts.map((o,i)=>`<button class="pv-btn" style="${sel.has(o)?`background:${shootColor(i)};border-color:${shootColor(i)};color:#fff;`:''}" onclick="pvToggle(${i})">${o}</button>`).join('');
-    }else{
-      const onCls=['pd0','pd1','pd2','pd3'];
-      gridHtml=opts.map((o,i)=>`<button class="pv-btn ${sel.has(o)?onCls[i]:''}" onclick="pvToggle(${i})">${o}</button>`).join('');
-    }
-
-    let depositHtml='';
-    let totalBoxHtml='';
-    if(isShoot){
-      let totalAmount=0;
-      sel.forEach(o=>{totalAmount+=SPRICES[o]||0;});
-      totalBoxHtml=`<div class="pv-total-box">총 입금 금액<span class="pv-total-val">${formatWon(totalAmount)}</span></div>`;
-      const isPaid=(m.id!=null)?!!paid[m.id]:false;
-      depositHtml=`
-        <div class="pv-sec-title" style="margin-top:18px;">입금 확인</div>
-        <button class="pv-btn" style="width:100%;padding:16px;${isPaid?'background:#34C759;border-color:#34C759;color:#fff;':''}" onclick="pvTogglePaid()">${isPaid?'✅ 입금 완료':'입금 완료 누르기'}</button>
-        ${depositAccount?`<div class="pub-link-box" onclick="copyDepositAccount()" style="cursor:pointer;margin-top:10px;">${depositAccount}<div style="font-size:11px;color:var(--text2);margin-top:4px;">👆 눌러서 계좌번호 복사</div></div>`:''}
-      `;
-    }
-
+    const total=checked.reduce((s,o)=>s+(SPRICES[o]||0),0);
+    const btns=SOPTS.map((o,i)=>`<button class="pv-btn" style="${sel.has(o)?`background:${shootColor(i)};border-color:${shootColor(i)};color:#fff;`:''}" onclick="togglePendingShoot('${o}')">${o}</button>`).join('');
+    head.innerHTML=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div class="pv-greeting" style="margin-bottom:0;">🎯 사격 신청</div></div></div>`;
     body.innerHTML=`<div class="pv-body">
-      <div class="pv-sec-title">${isShoot?'🎯 사격 참여 체크':'🍻 회식 참여 체크'}</div>
-      <div class="pv-grid">${gridHtml}</div>
-      <div class="pv-done ${isShoot?'sd':'dd'} ${checked.length?'show':''}">${checked.length?'✅ '+checked.join(' · ')+' 선택됨':''}</div>
-      ${totalBoxHtml}
-      ${depositHtml}
-      <p class="pv-notice">${isNew?'아직 명단에 없는 이름입니다 — 버튼을 누르면 자동으로 추가됩니다<br>':''}선택을 바꾸려면 다시 누르면 됩니다<br>이 링크는 누구나 접속 가능하니 본인 이름만 체크해주세요</p>
-      <button class="pv-share-btn" onclick="sharePublicLink()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-        카카오톡으로 링크 공유하기
-      </button>
+      <div class="pv-sec-title">참여할 탄종을 선택해주세요</div>
+      <div class="pv-grid">${btns}</div>
+      ${checked.length?`<div class="pv-total-box">총 입금 금액<span class="pv-total-val">${formatWon(total)}</span></div>`:''}
+      <button class="btn-pri" style="background:#5856D6;" onclick="confirmShoot()">확인</button>
     </div>`;
+    return;
+  }
+
+  /* ── dinnerEdit ── */
+  if(pvStep==='dinnerEdit'){
+    const sel=pvPendingDinner||new Set();
+    const onCls=['pd0','pd1','pd2','pd3'];
+    const btns=DOPTS.map((o,i)=>`<button class="pv-btn ${sel.has(o)?onCls[i]:''}" onclick="togglePendingDinner('${o}')">${o}</button>`).join('');
+    const total=[...sel].reduce((s,o)=>s+(DPRICES[o]||0),0);
+    head.innerHTML=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div class="pv-greeting" style="margin-bottom:0;">🍻 회식 신청</div></div></div>`;
+    body.innerHTML=`<div class="pv-body">
+      <div class="pv-sec-title">참여할 차수를 선택해주세요</div>
+      <div class="pv-grid">${btns}</div>
+      ${total>0?`<div class="pv-total-box">총 금액<span class="pv-total-val" style="color:var(--d2);">${formatWon(total)}</span></div>`:''}
+      <button class="btn-pri" onclick="confirmDinner()">확인</button>
+    </div>`;
+    return;
+  }
+
+  /* ── gsRegister ── */
+  if(pvStep==='gsRegister'){
+    head.innerHTML=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div class="pv-greeting" style="margin-bottom:0;">👥 단체사격</div></div></div>`;
+    body.innerHTML=`<div class="pv-body">
+      <div class="pv-sec-title">정보를 확인해주세요</div>
+      <input class="pv-name-input" id="gsRegName" type="text" placeholder="이름" maxlength="6" value="${pvUser?.name||''}">
+      <input class="pv-name-input" id="gsRegK" type="text" placeholder="기수 (예: 9기)" maxlength="5" value="${pvUser?.k||''}">
+      <input class="pv-name-input" id="gsRegBirth" type="text" placeholder="생년월일 (예: 20060115)" maxlength="8" value="${pvUser?.birth||''}">
+      <input class="pv-name-input" id="gsRegPhone" type="text" placeholder="전화번호" maxlength="13" value="${pvUser?.phone||''}">
+      <button class="btn-pri" style="background:#FF3B30;" onclick="pvGsRegisterSubmit()">다음</button>
+      <p class="err" id="gsRegErr2" style="margin-top:10px;"></p>
+    </div>`;
+    return;
+  }
+
+  /* ── gsEdit ── */
+  if(pvStep==='gsEdit'){
+    const cur=pvPendingGs||'';
+    const btns=gsOptions.map((o,i)=>{
+      const nm=gsOptName(o),rds=gsOptRounds(o);
+      const sel=cur===nm;
+      return`<button class="pv-btn" style="${sel?`background:${gsColor(i)};border-color:${gsColor(i)};color:#fff;`:''}" onclick="togglePendingGs('${nm.replace(/'/g,"\\'")}')">${nm}${rds?`\n${rds}발`:''}</button>`;
+    }).join('');
+    head.innerHTML=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div class="pv-greeting" style="margin-bottom:0;">👥 단체사격 신청</div></div></div>`;
+    body.innerHTML=`<div class="pv-body">
+      <div class="pv-sec-title">참가할 총기를 선택해주세요</div>
+      ${gsOptions.length?`<div class="pv-grid">${btns}</div>`:`<div class="empty-state">관리자가 총기 옵션을 추가하지 않았습니다</div>`}
+      ${cur?`<div class="pv-done sd show">✅ ${cur} 선택됨</div>`:''}
+      <button class="btn-pri" style="background:#FF3B30;" onclick="confirmGs()">확인</button>
+    </div>`;
+    return;
   }
 }
 
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.className='toast on';setTimeout(()=>t.className='toast',2200);}
-function pvShowToast(msg){const t=document.getElementById('pvToast');t.textContent=msg;t.className='pv-toast on';setTimeout(()=>t.className='pv-toast',2000);}
+function showPvToast(msg){const t=document.getElementById('pvToast');t.textContent=msg;t.className='pv-toast on';setTimeout(()=>t.className='pv-toast',2000);}
 
 document.addEventListener('keydown',e=>{
   if(e.key!=='Enter')return;
@@ -1635,7 +1743,10 @@ setTimeout(()=>{
   document.getElementById('scLoad').style.display='none';
   if(isPublicLink){
     isParticipant=true;
-    pvStep='category';pvCategory=null;pvMember=null;
+    /* 저장된 사용자 정보 확인 */
+    const saved=loadPvUser();
+    if(saved){pvUser=saved;pvStep='dashboard';}
+    else{pvUser=null;pvStep='identity';}
     show('scPart');
     renderParticipant();
     return;
