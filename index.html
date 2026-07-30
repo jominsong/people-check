@@ -1569,9 +1569,9 @@ window.sharePublicLink=function(){
 
 /* ── 렌더링 ── */
 function renderParticipant(){
-  const head=document.getElementById('pvHeaderWrap');
-  const body=document.getElementById('pvBodyWrap');
-  if(!head||!body)return;
+  const wrap=document.getElementById('pvWrap');
+  if(!wrap)return;
+  let _h='',_b='';
 
   /* 자동로그인: identity 단계에서 members 로드 완료 시 확인 */
   if(pvStep==='identity'&&pvUser){
@@ -1584,8 +1584,8 @@ function renderParticipant(){
 
   /* ── identity (로그인) ── */
   if(pvStep==='identity'){
-    head.innerHTML=`<div class="pv-top"><div class="pv-greeting">UPSC 참여 체크</div><div class="pv-sub">정보를 입력해주세요</div></div>`;
-    body.innerHTML=`<div class="pv-body">
+    _h=`<div class="pv-top"><div class="pv-greeting">UPSC 참여 체크</div><div class="pv-sub">정보를 입력해주세요</div></div>`;
+    _b=`<div class="pv-body">
       <div class="pv-sec-title">이름 및 정보 입력</div>
       <input class="pv-name-input" id="pvLoginName" type="text" placeholder="이름" maxlength="6">
       <input class="pv-name-input" id="pvLoginK" type="text" placeholder="기수 (예: 9기)" maxlength="5">
@@ -1596,6 +1596,7 @@ function renderParticipant(){
       <p class="pv-notice" style="margin-top:12px;">입력 정보는 UPSC 내부에서만 사용됩니다</p>
     </div>`;
     setTimeout(()=>document.getElementById('pvLoginName')?.focus(),200);
+    wrap.innerHTML=_h+_b;
     return;
   }
 
@@ -1655,13 +1656,14 @@ function renderParticipant(){
         </div>`}
     </div>`;
 
-    head.innerHTML=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><div><div class="pv-greeting">${pvUser.name}님 안녕하세요!</div><div class="pv-sub">신청할 항목을 선택하세요</div></div><button class="relogin-btn" onclick="pvLogout()">다시 로그인</button></div></div>`;
-    body.innerHTML=`<div class="pv-body">${shootCard}${dinnerCard}${gsCard}
+    _h=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><div><div class="pv-greeting">${pvUser.name}님 안녕하세요!</div><div class="pv-sub">신청할 항목을 선택하세요</div></div><button class="relogin-btn" onclick="pvLogout()">다시 로그인</button></div></div>`;
+    _b=`<div class="pv-body">${shootCard}${dinnerCard}${gsCard}
       <button class="pv-share-btn" onclick="sharePublicLink()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
         카카오톡으로 링크 공유하기
       </button>
     </div>`;
+    wrap.innerHTML=_h+_b;
     return;
   }
 
@@ -1671,13 +1673,14 @@ function renderParticipant(){
     const checked=[...sel];
     const total=checked.reduce((s,o)=>s+(SPRICES[o]||0),0);
     const btns=SOPTS.map((o,i)=>`<button class="pv-btn" style="${sel.has(o)?`background:${shootColor(i)};border-color:${shootColor(i)};color:#fff;`:''}" onclick="togglePendingShoot('${o}')">${o}</button>`).join('');
-    head.innerHTML=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div class="pv-greeting" style="margin-bottom:0;">🎯 사격 신청</div></div></div>`;
-    body.innerHTML=`<div class="pv-body">
+    _h=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div class="pv-greeting" style="margin-bottom:0;">🎯 사격 신청</div></div></div>`;
+    _b=`<div class="pv-body">
       <div class="pv-sec-title">참여할 탄종을 선택해주세요</div>
       <div class="pv-grid">${btns}</div>
       ${checked.length?`<div class="pv-total-box">총 입금 금액<span class="pv-total-val">${formatWon(total)}</span></div>`:''}
       <button class="btn-pri" style="background:#5856D6;" onclick="confirmShoot()">확인</button>
     </div>`;
+    wrap.innerHTML=_h+_b;
     return;
   }
 
@@ -1687,20 +1690,21 @@ function renderParticipant(){
     const onCls=['pd0','pd1','pd2','pd3'];
     const btns=DOPTS.map((o,i)=>`<button class="pv-btn ${sel.has(o)?onCls[i]:''}" onclick="togglePendingDinner('${o}')">${o}</button>`).join('');
     const total=[...sel].reduce((s,o)=>s+(DPRICES[o]||0),0);
-    head.innerHTML=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div class="pv-greeting" style="margin-bottom:0;">🍻 회식 신청</div></div></div>`;
-    body.innerHTML=`<div class="pv-body">
+    _h=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div class="pv-greeting" style="margin-bottom:0;">🍻 회식 신청</div></div></div>`;
+    _b=`<div class="pv-body">
       <div class="pv-sec-title">참여할 차수를 선택해주세요</div>
       <div class="pv-grid">${btns}</div>
       ${total>0?`<div class="pv-total-box">총 금액<span class="pv-total-val" style="color:var(--d2);">${formatWon(total)}</span></div>`:''}
       <button class="btn-pri" onclick="confirmDinner()">확인</button>
     </div>`;
+    wrap.innerHTML=_h+_b;
     return;
   }
 
   /* ── gsRegister ── */
   if(pvStep==='gsRegister'){
-    head.innerHTML=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div class="pv-greeting" style="margin-bottom:0;">👥 단체사격</div></div></div>`;
-    body.innerHTML=`<div class="pv-body">
+    _h=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div class="pv-greeting" style="margin-bottom:0;">👥 단체사격</div></div></div>`;
+    _b=`<div class="pv-body">
       <div class="pv-sec-title">정보를 확인해주세요</div>
       <input class="pv-name-input" id="gsRegName" type="text" placeholder="이름" maxlength="6" value="${pvUser?.name||''}">
       <input class="pv-name-input" id="gsRegK" type="text" placeholder="기수 (예: 9기)" maxlength="5" value="${pvUser?.k||''}">
@@ -1709,6 +1713,7 @@ function renderParticipant(){
       <button class="btn-pri" style="background:#FF3B30;" onclick="pvGsRegisterSubmit()">다음</button>
       <p class="err" id="gsRegErr2" style="margin-top:10px;"></p>
     </div>`;
+    wrap.innerHTML=_h+_b;
     return;
   }
 
@@ -1720,13 +1725,14 @@ function renderParticipant(){
       const sel=cur===nm;
       return`<button class="pv-btn" style="${sel?`background:${gsColor(i)};border-color:${gsColor(i)};color:#fff;`:''}" onclick="togglePendingGs('${nm.replace(/'/g,"\\'")}')">${nm}${rds?`\n${rds}발`:''}</button>`;
     }).join('');
-    head.innerHTML=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div class="pv-greeting" style="margin-bottom:0;">👥 단체사격 신청</div></div></div>`;
-    body.innerHTML=`<div class="pv-body">
+    _h=`<div class="pv-top"><div style="display:flex;align-items:center;gap:10px;"><button class="back-btn" onclick="pvBack()">←</button><div class="pv-greeting" style="margin-bottom:0;">👥 단체사격 신청</div></div></div>`;
+    _b=`<div class="pv-body">
       <div class="pv-sec-title">참가할 총기를 선택해주세요</div>
       ${gsOptions.length?`<div class="pv-grid">${btns}</div>`:`<div class="empty-state">관리자가 총기 옵션을 추가하지 않았습니다</div>`}
       ${cur?`<div class="pv-done sd show">✅ ${cur} 선택됨</div>`:''}
       <button class="btn-pri" style="background:#FF3B30;" onclick="confirmGs()">확인</button>
     </div>`;
+    wrap.innerHTML=_h+_b;
     return;
   }
 }
